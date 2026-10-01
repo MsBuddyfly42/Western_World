@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Templar's Western World</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-time="sunset">
+  <div id="app">
+    <header class="hero">
+      <div class="sun"></div><div class="stars"></div><div class="mountains"></div>
+      <div class="hero-content">
+        <p class="eyebrow">WELCOME TO DUSTY TRAIL TERRITORY</p>
+        <h1>Templar's Western World</h1>
+        <p class="tagline">Ride in. Explore freely. Solve mysteries. Make your own story.</p>
+        <div class="hero-actions">
+          <button class="primary" data-action="open-town">Enter Dusty Trail</button>
+          <button class="secondary" data-action="random-adventure">Surprise Me</button>
+          <button class="secondary" data-action="cycle-time">Change Time of Day</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="statusbar">
+      <span>🤠 Role: <strong id="statusRole">Traveler</strong></span>
+      <span>⭐ Reputation: <strong id="statusRep">0</strong></span>
+      <span>🎒 Keepsakes: <strong id="statusItems">0</strong></span>
+      <label class="quick-jump-label">🧭 Quick Jump <select id="quickJump"><option value="">Choose a place…</option></select></label>
+      <button class="tiny" data-action="open-journal">Open Trail Journal</button>
+    </div>
+
+    <nav class="topnav" aria-label="Main navigation">
+      <button data-view="home" class="nav-btn active">Town Square</button>
+      <button data-view="explore" class="nav-btn">Free Explore</button>
+      <button data-view="territory" class="nav-btn">Territory Map</button>
+      <button data-view="adventures" class="nav-btn">Adventures</button>
+      <button data-view="roleplay" class="nav-btn">Role-Play</button>
+      <button data-view="mystery" class="nav-btn">Mysteries</button>
+      <button data-view="games" class="nav-btn">Games</button>
+      <button data-view="history" class="nav-btn">History Trail</button>
+      <button data-view="gazette" class="nav-btn">Gazette</button>
+      <button data-view="people" class="nav-btn">Townspeople</button>
+      <button data-view="bounties" class="nav-btn">Bounty Board</button>
+      <button data-view="homestead" class="nav-btn">My Homestead</button>
+      <button data-view="jobs" class="nav-btn">Town Jobs</button>
+      <button data-view="treasure" class="nav-btn">Treasure Maps</button>
+      <button data-view="railroad" class="nav-btn">Railroad</button>
+      <button data-view="switchyard" class="nav-btn">🚂 Switchyard Game</button>
+      <button data-view="campfire" class="nav-btn">Campfire</button>
+      <button data-view="market" class="nav-btn">Frontier Market</button>
+      <button data-view="wardrobe" class="nav-btn">Outfits & Titles</button>
+      <button data-view="encounters" class="nav-btn">Road Encounters</button>
+      <button data-view="sagatrail" class="nav-btn">Long Story</button>
+      <button data-view="ownership" class="nav-btn">Businesses</button>
+      <button data-view="schoolhouse" class="nav-btn">Schoolhouse</button>
+      <button data-view="postoffice" class="nav-btn">Post Office</button>
+      <button data-view="faircircuit" class="nav-btn">Fair Circuit</button>
+      <button data-view="npstories" class="nav-btn">Character Stories</button>
+      <button data-view="deepmysteries" class="nav-btn">Case Files+</button>
+      <button data-view="calendar" class="nav-btn">Living Calendar</button>
+      <button data-view="museum" class="nav-btn">Frontier Museum</button>
+      <button data-view="picturehouse" class="nav-btn">Picture House</button>
+      <button data-view="rodeo" class="nav-btn">Rodeo Grounds</button>
+      <button data-view="council" class="nav-btn">Town Council</button>
+      <button data-view="album" class="nav-btn">Memory Album</button>
+      <button data-view="legendmaker" class="nav-btn">Make a Western</button>
+      <button data-view="almanac" class="nav-btn">Frontier Almanac</button>
+      <button data-view="timetrial" class="nav-btn">Time Trail</button>
+      <button data-view="ponyexpress" class="nav-btn">Pony Express</button>
+      <button data-view="riverlanding" class="nav-btn">River Landing</button>
+      <button data-view="cookhouse" class="nav-btn">Trail Cookhouse</button>
+      <button data-view="stagecoach" class="nav-btn">Stagecoach Lines</button>
+      <button data-view="socialhall" class="nav-btn">Social Hall</button>
+      <button data-view="casegenerator" class="nav-btn">Sheriff's Desk</button>
+      <button data-view="nightwatch" class="nav-btn">Night Watch</button>
+      <button data-view="moodboard" class="nav-btn">What Do I Feel Like?</button>
+      <button data-view="expeditions" class="nav-btn">Expedition Board</button>
+      <button data-view="passport" class="nav-btn">Trail Passport</button>
+      <button data-view="wantedmaker" class="nav-btn">Wanted Poster Studio</button>
+      <button data-view="horsechase" class="nav-btn">Horseback Chase</button>
+      <button data-view="saloonpiano" class="nav-btn">🎹 Saloon Piano</button>
+      <button data-view="achievements" class="nav-btn">Achievements</button>
+      <button data-view="festival" class="nav-btn">Town Festival</button>
+      <button data-view="cozy" class="nav-btn">Front Porch</button>
+    </nav>
+
+    <main>
+      <section id="home" class="view active-view">
+        <div class="section-heading"><div><p class="kicker">DUSTY TRAIL TERRITORY</p><h2>What do you feel like doing?</h2></div><span class="badge">No pressure. No required path.</span></div>
+        <div class="choice-grid">
+          <article class="choice-card amber" data-jump="explore"><span class="icon">🐎</span><h3>Just Wander</h3><p>Stroll town, enter buildings, meet characters, and poke around.</p></article>
+          <article class="choice-card rust" data-jump="adventures"><span class="icon">🚂</span><h3>Take an Adventure</h3><p>Ride the rails, work the ranch, visit a ghost town, or head down the trail.</p></article>
+          <article class="choice-card red" data-jump="mystery"><span class="icon">🔎</span><h3>Solve a Mystery</h3><p>Track clues, question suspects, and crack cases around the territory.</p></article>
+          <article class="choice-card teal" data-jump="games"><span class="icon">🎯</span><h3>Play Something</h3><p>Try frontier games, score challenges, luck rounds, and trail decisions.</p></article>
+          <article class="choice-card blue" data-jump="roleplay"><span class="icon">🤠</span><h3>Become Somebody</h3><p>Play a sheriff, rancher, journalist, bounty hunter, traveler, or saloon owner.</p></article>
+          <article class="choice-card gold" data-jump="history"><span class="icon">📜</span><h3>Step Into History</h3><p>Explore Old West themes while separating history, legend, and movie myth.</p></article>
+          <article class="choice-card plum" data-jump="cozy"><span class="icon">🌙</span><h3>Take It Easy</h3><p>Sit on the porch, watch town life, or do absolutely nothing.</p></article>
+          <article class="choice-card ink" data-jump="gazette"><span class="icon">📰</span><h3>Read the Gazette</h3><p>See the latest headline, rumor, weather, notice, and odd little happenings.</p></article>
+        </div>
+        <section class="town-board"><div><p class="kicker">TODAY IN TOWN</p><h3 id="townHeadline">The stagecoach from Copper Creek just arrived.</h3><p id="townDetail">Three strangers stepped off, and one of them is carrying a locked metal case.</p></div><button class="secondary" data-action="refresh-town">New Town Event</button></section>
+      </section>
+
+      <section id="explore" class="view">
+        <div class="section-heading"><div><p class="kicker">FREE-EXPLORE MODE</p><h2>Dusty Trail Town Map</h2></div><span class="badge">Click any place</span></div>
+        <div class="town-map" id="townMap">
+          <button class="building sheriff" data-place="Sheriff's Office">⭐<span>Sheriff</span></button>
+          <button class="building saloon" data-place="Golden Spur Saloon">🎹<span>Saloon</span></button>
+          <button class="building hotel" data-place="Sunset Hotel">🛏️<span>Hotel</span></button>
+          <button class="building stable" data-place="Livery Stable">🐴<span>Stable</span></button>
+          <button class="building bank" data-place="Dusty Trail Bank">🏦<span>Bank</span></button>
+          <button class="building general" data-place="General Store">🧺<span>General Store</span></button>
+          <button class="building newspaper" data-place="Frontier Gazette">📰<span>Gazette</span></button>
+          <button class="building station" data-place="Railroad Depot">🚂<span>Depot</span></button>
+          <button class="building chapel" data-place="Community Chapel">🔔<span>Chapel</span></button>
+          <button class="building cafe" data-place="Prairie Kitchen">🥧<span>Kitchen</span></button>
+          <div class="road road-a"></div><div class="road road-b"></div>
+        </div>
+        <div class="panel" id="placePanel"><h3>Pick a place to visit.</h3><p>Nothing is required. Wander around and leave whenever you want.</p></div>
+      </section>
+
+
+      <section id="territory" class="view">
+        <div class="section-heading"><div><p class="kicker">DUSTY TRAIL TERRITORY</p><h2>Ride Beyond Town</h2></div><span class="badge">6 destinations • free travel</span></div>
+        <div class="territory-map" id="territoryMap"></div>
+        <div class="panel" id="territoryPanel"><h3>The road is open.</h3><p>Pick a destination, travel by horse, train, or stagecoach, or stay right where you are.</p></div>
+      </section>
+
+      <section id="adventures" class="view">
+        <div class="section-heading"><div><p class="kicker">OPEN TERRITORY</p><h2>Choose an adventure—or ignore all of them.</h2></div><span class="badge">Four playable routes</span></div>
+        <div class="adventure-grid" id="adventureGrid"></div>
+        <div class="panel adventure-stage" id="adventureStage"><h3>Your horse is saddled.</h3><p>Choose a route when something catches your eye.</p></div>
+      </section>
+
+      <section id="roleplay" class="view">
+        <div class="section-heading"><div><p class="kicker">ROLE-PLAY CORRAL</p><h2>Choose who you are today</h2></div></div>
+        <div class="role-grid" id="roleGrid"></div>
+        <div class="panel" id="rolePanel"><h3>Your story begins when you choose a role.</h3><p>Your role changes story prompts but never locks you into one path.</p></div>
+      </section>
+
+      <section id="mystery" class="view">
+        <div class="section-heading"><div><p class="kicker">FRONTIER MYSTERY BUREAU</p><h2 id="caseTitle">The Case of the Vanishing Payroll</h2></div><span class="badge" id="caseBadge">Case #001</span></div>
+        <div class="case-switcher"><button class="secondary case-choice active" data-case="payroll">Vanishing Payroll</button><button class="secondary case-choice" data-case="ghost">Ghost Town Lantern</button></div>
+        <div class="mystery-layout">
+          <aside class="case-file"><h3>Case File</h3><p id="caseIntro">The railroad payroll vanished from a locked office at 8:15 PM.</p><p><strong>Goal:</strong> collect at least 3 clues, then make an accusation.</p><div class="clue-count">Clues: <span id="clueCount">0</span>/<span id="clueTotal">4</span></div></aside>
+          <div class="suspects" id="suspectCards"></div>
+        </div>
+        <div class="panel" id="mysteryPanel"><h3>Start by questioning people.</h3><p>Some statements are facts, some are suspicious, and some are distractions.</p></div>
+        <button class="primary" id="accuseBtn" disabled>Make an Accusation</button>
+      </section>
+
+      <section id="games" class="view">
+        <div class="section-heading"><div><p class="kicker">SALOON GAME NIGHT</p><h2>Pick a quick game</h2></div><span class="badge">Play for fun</span></div>
+        <div class="game-tabs"><button class="game-tab active" data-game="draw">Quick Draw Math</button><button class="game-tab" data-game="wanted">Wanted Poster Guess</button><button class="game-tab" data-game="trail">Trail Choice</button><button class="game-tab" data-game="luck">Lucky Horseshoe</button><button class="game-tab" data-game="word">Frontier Word Scramble</button><button class="game-tab" data-game="cards">High Card Showdown</button></div>
+        <div class="game-box" id="gameBox"></div>
+      </section>
+
+      <section id="history" class="view">
+        <div class="section-heading"><div><p class="kicker">HISTORY TRAIL</p><h2>Fact, Legend & Movie Myth</h2></div><span class="badge">Explore at your own pace</span></div>
+        <div class="history-grid" id="historyGrid"></div>
+      </section>
+
+      <section id="gazette" class="view">
+        <div class="section-heading"><div><p class="kicker">FRONTIER GAZETTE</p><h2>Today's Dusty Trail Edition</h2></div><button class="secondary" data-action="new-edition">Print Another Edition</button></div>
+        <article class="newspaper-sheet"><p class="paper-date" id="gazetteDate">Evening Edition</p><h3 id="gazetteHeadline">STRANGE LIGHT SEEN BEYOND CANYON RIDGE</h3><p class="lead" id="gazetteLead">Several residents insist a lantern moved through the abandoned mining settlement after midnight.</p><div class="gazette-columns"><div><h4>Town Notice</h4><p id="gazetteNotice"></p></div><div><h4>Rumor Mill</h4><p id="gazetteRumor"></p></div><div><h4>Small Advertisement</h4><p id="gazetteAd"></p></div></div><button class="primary" data-action="investigate-headline">Investigate This Headline</button></article>
+      </section>
+
+
+
+      <section id="people" class="view">
+        <div class="section-heading"><div><p class="kicker">PEOPLE OF DUSTY TRAIL</p><h2>Friends, Rivals & Familiar Faces</h2></div><span class="badge">Relationships remember you</span></div>
+        <div class="people-grid" id="peopleGrid"></div>
+        <div class="panel" id="peoplePanel"><h3>Meet somebody.</h3><p>Talk, help, joke, disagree, or simply move along. Relationships change gradually and never lock you into a storyline.</p></div>
+      </section>
+
+      <section id="bounties" class="view">
+        <div class="section-heading"><div><p class="kicker">SHERIFF'S BOUNTY BOARD</p><h2>Cases, Missing Property & Strange Jobs</h2></div><span class="badge">Choose any notice</span></div>
+        <div class="wanted-grid" id="bountyGrid"></div>
+        <div class="panel" id="bountyStage"><h3>The board is full.</h3><p>Not every notice is about an outlaw. Some are lost property, suspicious cargo, missing people, or odd town problems.</p></div>
+      </section>
+
+
+      <section id="homestead" class="view">
+        <div class="section-heading"><div><p class="kicker">YOUR PLACE IN THE TERRITORY</p><h2>Horse & Homestead</h2></div><span class="badge">Persistent upgrades</span></div>
+        <div class="homestead-layout">
+          <article class="panel"><h3>🐴 Your Trail Horse</h3><div id="horsePanel"></div></article>
+          <article class="panel"><h3>🏡 Red Rock Homestead</h3><div id="ranchPanel"></div></article>
+        </div>
+      </section>
+
+      <section id="jobs" class="view">
+        <div class="section-heading"><div><p class="kicker">EARN A LITTLE REPUTATION</p><h2>Town Jobs</h2></div><span class="badge">Short optional activities</span></div>
+        <div class="wanted-grid" id="jobGrid"></div>
+        <div class="panel" id="jobStage"><h3>No clock to punch.</h3><p>Take a job if you feel like it, or wander away.</p></div>
+      </section>
+
+      <section id="treasure" class="view">
+        <div class="section-heading"><div><p class="kicker">FOLDED MAPS & OLD CLUES</p><h2>Treasure Trails</h2></div><span class="badge">Three multi-step hunts</span></div>
+        <div class="adventure-grid" id="treasureGrid"></div>
+        <div class="panel" id="treasureStage"><h3>The maps are waiting.</h3><p>Pick one when you want a longer hunt.</p></div>
+      </section>
+
+      <section id="railroad" class="view">
+        <div class="section-heading"><div><p class="kicker">DUSTY TRAIL RAILROAD</p><h2>Departures, Incidents & Long Rides</h2></div><span class="badge">Dynamic train stories</span></div>
+        <div class="rail-board" id="railBoard"></div>
+        <div class="panel" id="railStage"><h3>All aboard when you're ready.</h3><p>Choose a destination or investigate whatever happens on the line.</p></div>
+      </section>
+
+
+      <section id="campfire" class="view">
+        <div class="section-heading"><div><p class="kicker">NIGHT ON THE OPEN RANGE</p><h2>Campfire & Trail Life</h2></div><span class="badge">Rest • stories • simple resource challenges</span></div>
+        <div class="frontier-life-grid" id="campfireGrid"></div>
+        <div class="panel" id="campfireStage"><h3>🔥 The fire is crackling.</h3><p>Rest, hear a story, cook a simple trail meal, fish the creek, or just watch the sparks drift upward.</p></div>
+      </section>
+
+      <section id="market" class="view">
+        <div class="section-heading"><div><p class="kicker">DUSTY TRAIL TRADING ROW</p><h2>Frontier Market</h2></div><span class="badge">Spend market tokens earned through play</span></div>
+        <div class="market-wallet">🪙 Market Tokens: <strong id="tokenCount">0</strong></div>
+        <div class="market-grid" id="marketGrid"></div>
+        <div class="panel" id="marketStage"><h3>The merchants are open.</h3><p>Buy cosmetic keepsakes, camp supplies, horse gear, and little luxuries. Nothing here is required to progress.</p></div>
+      </section>
+
+      <section id="wardrobe" class="view">
+        <div class="section-heading"><div><p class="kicker">YOUR WESTERN IDENTITY</p><h2>Outfits, Titles & Keepsake Style</h2></div><span class="badge">Purely for role-play</span></div>
+        <div class="wardrobe-hero" id="wardrobeHero"></div>
+        <div class="wardrobe-grid" id="wardrobeGrid"></div>
+      </section>
+
+      <section id="encounters" class="view">
+        <div class="section-heading"><div><p class="kicker">BETWEEN TOWNS</p><h2>Random Road Encounters</h2></div><span class="badge">Different every trip</span></div>
+        <div class="encounter-stage" id="encounterStage"><div class="encounter-icon">🌵</div><h3>The road is quiet—for now.</h3><p>Ride out and see what happens.</p><button class="primary" id="rideEncounter">Ride the Road</button></div>
+        <div class="encounter-log" id="encounterLog"></div>
+      </section>
+
+      <section id="sagatrail" class="view">
+        <div class="section-heading"><div><p class="kicker">LONG-FORM STORY CAMPAIGN</p><h2>The Seven Bells of Dusty Trail</h2></div><span class="badge">8 chapters • saves automatically</span></div>
+        <div class="saga-progress"><div id="sagaBar"></div></div>
+        <div class="panel saga-stage" id="sagaStage"></div>
+      </section>
+
+      <section id="ownership" class="view">
+        <div class="section-heading"><div><p class="kicker">OWN A PIECE OF DUSTY TRAIL</p><h2>Frontier Businesses</h2></div><span class="badge">Optional • saved progress</span></div>
+        <div class="business-summary" id="businessSummary"></div>
+        <div class="business-grid" id="businessGrid"></div>
+        <div class="panel" id="businessStage"><h3>Pick a business when you feel like trying one.</h3><p>You can own several. Each one creates rotating daily situations, not chores you must complete.</p></div>
+      </section>
+
+      <section id="schoolhouse" class="view">
+        <div class="section-heading"><div><p class="kicker">DUSTY TRAIL SCHOOLHOUSE</p><h2>Frontier School Day</h2></div><span class="badge">History • words • puzzles</span></div>
+        <div class="schoolhouse-scene"><div class="school-bell">🔔</div><div><h3>Miss Eliza Hart's One-Room Schoolhouse</h3><p>Drop in for a tiny challenge, historical object, spelling puzzle, geography clue, or simply read the chalkboard.</p></div></div>
+        <div class="compact-grid" id="schoolActivityGrid"></div>
+        <div class="panel" id="schoolStage"><h3>The chalkboard is clean.</h3><p>Choose any activity. Nothing here is graded.</p></div>
+      </section>
+
+      <section id="postoffice" class="view">
+        <div class="section-heading"><div><p class="kicker">MAIL, TELEGRAPH & PARCELS</p><h2>Dusty Trail Post Office</h2></div><span class="badge">Routes shuffle daily</span></div>
+        <div class="postoffice-board" id="postOfficeBoard"></div>
+        <div class="panel" id="mailStage"><h3>The morning mailbag just arrived.</h3><p>Sort letters, deliver parcels, decode telegrams, or ignore the counter and keep wandering.</p></div>
+      </section>
+
+      <section id="faircircuit" class="view">
+        <div class="section-heading"><div><p class="kicker">TRAVELING FRONTIER FAIR CIRCUIT</p><h2>Three-Town Fair Season</h2></div><span class="badge">Rotating events</span></div>
+        <div class="fair-route" id="fairRoute"></div>
+        <div class="festival-grid" id="fairActivityGrid"></div>
+        <div class="panel" id="fairStage"><h3>The wagons are arriving.</h3><p>Pick a town fair and see which activities are running today.</p></div>
+      </section>
+
+      <section id="npstories" class="view">
+        <div class="section-heading"><div><p class="kicker">PEOPLE HAVE LIVES HERE</p><h2>Character Storylines</h2></div><span class="badge">Relationship-driven</span></div>
+        <div class="people-grid" id="npcStoryGrid"></div>
+        <div class="panel" id="npcStoryStage"><h3>Spend time with somebody.</h3><p>Small story chapters unlock as your friendship or rivalry changes.</p></div>
+      </section>
+
+      <section id="deepmysteries" class="view">
+        <div class="section-heading"><div><p class="kicker">DUSTY TRAIL INVESTIGATION ARCHIVE</p><h2>Extended Case Files</h2></div><span class="badge">Multi-stage mysteries</span></div>
+        <div class="case-archive" id="caseArchive"></div>
+        <div class="panel" id="deepCaseStage"><h3>Three thicker case folders sit on the desk.</h3><p>Each case remembers your current chapter and can be left unfinished.</p></div>
+      </section>
+
+      <section id="calendar" class="view">
+        <div class="section-heading"><div><p class="kicker">THE TERRITORY KEEPS TIME</p><h2>Living Calendar & Seasons</h2></div><span class="badge">Days • weather • special events</span></div>
+        <div class="calendar-hero" id="calendarHero"></div>
+        <div class="compact-grid" id="calendarEventGrid"></div>
+        <div class="panel" id="calendarStage"><h3>Every day can feel a little different.</h3><p>Advance the world when you want, or leave time exactly where it is.</p></div>
+      </section>
+
+      <section id="museum" class="view">
+        <div class="section-heading"><div><p class="kicker">HISTORY YOU CAN TOUCH</p><h2>Dusty Trail Frontier Museum</h2></div><span class="badge">Artifacts • context • movie myth checks</span></div>
+        <div class="museum-grid" id="museumGrid"></div>
+        <div class="panel" id="museumStage"><h3>The curator left the cases open for you.</h3><p>Inspect an object to learn what it can—and cannot—tell us about life in the West.</p></div>
+      </section>
+
+      <section id="picturehouse" class="view">
+        <div class="section-heading"><div><p class="kicker">SATURDAY NIGHT AT THE PICTURE HOUSE</p><h2>Make-Believe Western Movie Night</h2></div><span class="badge">Original scenarios • no fixed ending</span></div>
+        <div class="picturehouse-marquee">🎬 DUSTY TRAIL PICTURE HOUSE • TONIGHT: YOU PICK THE STORY</div>
+        <div class="movie-grid" id="movieGrid"></div>
+        <div class="panel" id="movieStage"><h3>The house lights are dimming.</h3><p>Choose a movie-style adventure and play the lead your way.</p></div>
+      </section>
+
+      <section id="rodeo" class="view">
+        <div class="section-heading"><div><p class="kicker">DUSTY TRAIL RODEO GROUNDS</p><h2>Skill Challenges & Horse Events</h2></div><span class="badge">No betting • replay anytime</span></div>
+        <div class="rodeo-scoreboard" id="rodeoScoreboard"></div>
+        <div class="festival-grid" id="rodeoGrid"></div>
+        <div class="panel" id="rodeoStage"><h3>The arena gate is open.</h3><p>Try a quick skill event, work with your trail horse, or just watch from the rail.</p></div>
+      </section>
+
+      <section id="council" class="view">
+        <div class="section-heading"><div><p class="kicker">HOW SHOULD DUSTY TRAIL GROW?</p><h2>Town Council</h2></div><span class="badge">Fictional community choices</span></div>
+        <div class="council-board" id="councilBoard"></div>
+        <div class="panel" id="councilStage"><h3>The meeting is called to order.</h3><p>Choose which local project you want the fictional town to work on next. These are role-play decisions, not real-world politics.</p></div>
+      </section>
+
+      <section id="album" class="view">
+        <div class="section-heading"><div><p class="kicker">YOUR STORY SO FAR</p><h2>Western World Memory Album</h2></div><span class="badge">Built from your saved adventures</span></div>
+        <div class="album-cover"><div class="album-star">★</div><div><h3>Templar's Dusty Trail Album</h3><p>Places, roles, keepsakes, friends, mysteries, titles, and stories collected while you wander.</p></div></div>
+        <div class="album-grid" id="albumGrid"></div>
+      </section>
+
+      <section id="legendmaker" class="view">
+        <div class="section-heading"><div><p class="kicker">BUILD YOUR OWN EPISODE</p><h2>Western Story Generator</h2></div><span class="badge">Mix-and-match adventures</span></div>
+        <div class="legend-controls"><button class="primary" id="makeLegend">Deal Me a Western</button><button class="secondary" id="saveLegend">Save This Story Seed</button></div>
+        <article class="legend-card" id="legendCard"><h3>Your next Western is waiting.</h3><p>Generate an original setting, role, problem, complication, and ending choice.</p></article>
+        <div class="compact-grid" id="savedLegendGrid"></div>
+      </section>
+
+      <section id="almanac" class="view">
+        <div class="section-heading"><div><p class="kicker">LAND, SKY & TRAIL KNOWLEDGE</p><h2>Frontier Almanac</h2></div><span class="badge">Wildlife • weather • plants • navigation</span></div>
+        <div class="almanac-tabs" id="almanacTabs"></div>
+        <div class="almanac-grid" id="almanacGrid"></div>
+        <div class="panel" id="almanacStage"><h3>Open an almanac card.</h3><p>These are short learning stops woven into the world—not assignments.</p></div>
+      </section>
+
+
+      <section id="timetrial" class="view">
+        <div class="section-heading"><div><p class="kicker">STEP INTO AN ERA</p><h2>Western Time Trail</h2></div><span class="badge">History • choices • context</span></div>
+        <div class="timeline-grid" id="timeTrailGrid"></div>
+        <div class="panel" id="timeTrailStage"><h3>Choose a time window.</h3><p>Each stop blends real historical context with an original role-play scene. Movie legend is clearly separated from documented history.</p></div>
+      </section>
+
+      <section id="ponyexpress" class="view">
+        <div class="section-heading"><div><p class="kicker">MAIL MUST MOVE</p><h2>Pony Express & Courier Routes</h2></div><span class="badge">Timed-feel missions • no pressure</span></div>
+        <div class="route-board" id="ponyRouteGrid"></div>
+        <div class="panel" id="ponyStage"><h3>Pick up a dispatch.</h3><p>Choose a route, manage the ride, and deliver the message. There is no real timer—you can play at your own pace.</p></div>
+      </section>
+
+      <section id="riverlanding" class="view">
+        <div class="section-heading"><div><p class="kicker">BEYOND THE DUST</p><h2>River Landing</h2></div><span class="badge">Trade • travel • mysteries</span></div>
+        <div class="river-scene">🚢 <span>Packets, ferries, freight, travelers, and rumors connect Dusty Trail to a wider world.</span></div>
+        <div class="festival-grid" id="riverGrid"></div>
+        <div class="panel" id="riverStage"><h3>The landing is busy today.</h3><p>Watch the boats, take a job, follow a rumor, or simply sit by the water.</p></div>
+      </section>
+
+      <section id="cookhouse" class="view">
+        <div class="section-heading"><div><p class="kicker">TRAIL FOOD & CAMP LIFE</p><h2>Trail Cookhouse</h2></div><span class="badge">Recipes • memory • mini-games</span></div>
+        <div class="cook-grid" id="cookGrid"></div>
+        <div class="panel" id="cookStage"><h3>Cookie rings the dinner bell.</h3><p>Make a simple trail meal, learn where common foods came from, or play a pantry challenge.</p></div>
+      </section>
+
+      <section id="stagecoach" class="view">
+        <div class="section-heading"><div><p class="kicker">OVERLAND TRAVEL</p><h2>Dusty Trail Stagecoach Lines</h2></div><span class="badge">Routes • passengers • roadside events</span></div>
+        <div class="route-board" id="coachRouteBoard"></div>
+        <div class="panel" id="coachStage"><h3>The driver checks the harness.</h3><p>Choose a destination and see what happens between here and there.</p></div>
+      </section>
+
+      <section id="socialhall" class="view">
+        <div class="section-heading"><div><p class="kicker">MUSIC, STORIES & COMPANY</p><h2>Dusty Trail Social Hall</h2></div><span class="badge">Dance cards • storytelling • community nights</span></div>
+        <div class="socialhall-hero">🎻 <strong>Tonight's hall is open.</strong> Come for a dance, a story circle, a sing-along-style instrumental night, or just sit along the wall and watch.</div>
+        <div class="compact-grid" id="socialHallGrid"></div>
+        <div class="panel" id="socialHallStage"><h3>The floorboards are polished.</h3><p>No required score here—choose whatever kind of evening sounds good.</p></div>
+      </section>
+
+      <section id="casegenerator" class="view">
+        <div class="section-heading"><div><p class="kicker">ENDLESS SMALL-TOWN MYSTERIES</p><h2>Sheriff's Desk</h2></div><span class="badge">Fresh procedural cases</span></div>
+        <div class="sheriff-desk"><div class="big">⭐</div><div><h3>Generate a New Case</h3><p>Every case combines a location, missing object, witness, clue, and twist.</p></div><button class="primary" id="newGeneratedCase">Pull a Case File</button></div>
+        <div class="panel" id="generatedCaseStage"><h3>No file is open.</h3><p>Pull a case whenever you want a quick mystery.</p></div>
+      </section>
+
+      <section id="nightwatch" class="view">
+        <div class="section-heading"><div><p class="kicker">AFTER THE LAMPS ARE LIT</p><h2>Night Watch</h2></div><span class="badge">Quiet patrols • odd noises • late-night scenes</span></div>
+        <div class="nightwatch-scene" id="nightWatchScene"><div class="moon-mark">🌙</div><h3>Dusty Trail after dark</h3><p>The storefront lamps glow. A train whistle carries from far beyond town.</p><button class="primary" id="nightPatrol">Take a Night Walk</button></div>
+        <div class="encounter-log" id="nightWatchLog"></div>
+      </section>
+
+      <section id="moodboard" class="view">
+        <div class="section-heading"><div><p class="kicker">NO QUEST REQUIRED</p><h2>What Do I Feel Like Doing?</h2></div><span class="badge">Honeybrook-style choice mode</span></div>
+        <div class="mood-grid" id="moodGrid"></div>
+        <div class="panel" id="moodStage"><h3>Pick a mood, not a mission.</h3><p>Western World will suggest a few things that fit how you feel right now. You can ignore every suggestion and wander somewhere else.</p></div>
+      </section>
+
+      <section id="expeditions" class="view">
+        <div class="section-heading"><div><p class="kicker">SHORT ADVENTURE PACKS</p><h2>Expedition Board</h2></div><span class="badge">Fresh objectives • replayable</span></div>
+        <div class="expedition-board" id="expeditionBoard"></div>
+        <div class="panel" id="expeditionStage"><h3>Three expeditions are posted.</h3><p>Each expedition stitches together several parts of the world into one optional mini-adventure.</p></div>
+      </section>
+
+      <section id="passport" class="view">
+        <div class="section-heading"><div><p class="kicker">YOUR TERRITORY RECORD</p><h2>Trail Passport</h2></div><span class="badge">Stamps • milestones • memories</span></div>
+        <div class="passport-cover"><div class="passport-star">★</div><div><h3>Dusty Trail Territory Passport</h3><p>Earn stamps simply by exploring the world your way.</p></div></div>
+        <div class="passport-grid" id="passportGrid"></div>
+        <div class="panel" id="passportStage"><h3>Your passport grows as you wander.</h3><p>No route is required and there is no penalty for skipping anything.</p></div>
+      </section>
+
+      <section id="wantedmaker" class="view">
+        <div class="section-heading"><div><p class="kicker">MAKE-BELIEVE FRONTIER FUN</p><h2>Wanted Poster Studio</h2></div><span class="badge">Create silly fictional posters</span></div>
+        <div class="wanted-studio">
+          <label>Poster name <input id="posterName" value="The Mysterious Traveler" maxlength="40"></label>
+          <label>Wanted for <select id="posterCrime"><option>Stealing the last biscuit</option><option>Winning every horseshoe game</option><option>Knowing too many town secrets</option><option>Riding off with the picnic basket</option><option>Being suspiciously good at riddles</option></select></label>
+          <label>Reward <select id="posterReward"><option>12 jellybeans</option><option>One golden horseshoe</option><option>A slice of pie</option><option>Three shiny buttons</option><option>Bragging rights</option></select></label>
+          <button class="primary" id="makePoster">Make Poster</button>
+        </div>
+        <article class="wanted-poster" id="wantedPoster"><div class="wanted-top">WANTED</div><div class="wanted-sub">FOR PURELY FICTIONAL MISCHIEF</div><div class="wanted-name">The Mysterious Traveler</div><p>Wanted for stealing the last biscuit.</p><strong>REWARD: 12 jellybeans</strong></article>
+      </section>
+
+      <section id="switchyard" class="view">
+        <div class="section-heading"><div><p class="kicker">RAILROAD OPERATIONS • HANDS-ON GAME</p><h2>🚂 Switchyard Express</h2></div><span class="badge">Route trains • Deliver cargo • Replay</span></div>
+        <p>Become the railroad dispatcher. Flip the junctions, then send the train to the station on your shipping order. Each destination needs its own combination. No countdown: take your time.</p>
+        <div class="switchyard-layout">
+          <div class="switchyard-scene" id="switchyardScene" aria-label="Railroad map with one starting station and four destination stations">
+            <svg viewBox="0 0 680 360" role="img" aria-label="Four tracks branch to North Ridge, Silver Creek, Coyote Flats, and Copper Creek">
+              <defs><pattern id="sleeperPattern" width="16" height="16" patternUnits="userSpaceOnUse"><rect x="1" y="0" width="3" height="16" fill="#75543a"/></pattern></defs>
+              <path d="M28 180 L160 180 L285 84 L620 48 M160 180 L285 143 L620 136 M160 180 L285 229 L620 222 M160 180 L285 288 L620 311" fill="none" stroke="#674528" stroke-width="11" stroke-linecap="round" opacity=".75"/>
+              <path d="M28 180 L160 180 L285 84 L620 48 M160 180 L285 143 L620 136 M160 180 L285 229 L620 222 M160 180 L285 288 L620 311" fill="none" stroke="#ead19a" stroke-width="3" stroke-dasharray="9 12" stroke-linecap="round"/>
+              <path id="selectedTrack" d="M28 180 L160 180 L285 84 L620 48" fill="none" stroke="#ffda55" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/>
+              <circle cx="160" cy="180" r="13" fill="#b45309" stroke="#ffdf8a" stroke-width="3"/>
+              <text x="15" y="209" class="yard-label">DEPOT</text><text x="490" y="29" class="yard-label">NORTH RIDGE</text>
+              <text x="490" y="117" class="yard-label">SILVER CREEK</text><text x="490" y="205" class="yard-label">COYOTE FLATS</text><text x="490" y="294" class="yard-label">COPPER CREEK</text>
+              <text id="switchTrain" x="27" y="174" font-size="34">🚂</text>
+            </svg>
+            <div class="yard-sign">DUSTY TRAIL RAIL COMPANY</div>
+          </div>
+          <div class="switchyard-console">
+            <h3 id="yardOrder">Your first shipping order awaits.</h3><p id="yardCargo">Choose a route and send your train.</p>
+            <div class="yard-toggle"><span>Junction A</span><button id="yardA" class="secondary" aria-pressed="false">▲ Northern tracks</button></div>
+            <div class="yard-toggle"><span>Junction B</span><button id="yardB" class="secondary" aria-pressed="false">◀ Upper branch</button></div>
+            <p class="yard-preview">Selected destination: <strong id="yardSelected">North Ridge</strong></p>
+            <button id="yardDispatch" class="primary">🚂 Dispatch Train</button>
+            <button id="yardNewOrder" class="secondary">New Shipping Order</button>
+            <p id="yardFeedback" role="status" aria-live="polite">Set your switches to match the order.</p>
+            <div class="yard-record" id="yardRecord">Successful deliveries: 0</div>
+          </div>
+        </div>
+      </section>
+
+
+      <section id="prospector" class="view">
+        <div class="section-heading"><div><p class="kicker">THE GOLD COUNTRY EXPANSION</p><h2>⛏️ Prospector's Creek</h2></div><span class="badge">Explore • Investigate • Pan</span></div>
+        <p>Follow geological clues to the most promising creek bed. Every expedition reshuffles the clues, so you can read the landscape instead of guessing from a fixed answer. No timers, no penalties, and no real-money purchases.</p>
+        <div class="prospector-layout">
+          <div class="prospector-landscape" aria-label="Illustrated prospecting creek with three dig sites">
+            <div class="prospector-sun">☀️</div><div class="prospector-hills"></div><div class="prospector-water"></div>
+            <div class="prospector-sites">
+              <button type="button" class="prospector-site" data-prospect="0"><span>🌲</span><strong>Pine Bend</strong><small>Inspect banks</small></button>
+              <button type="button" class="prospector-site" data-prospect="1"><span>🪨</span><strong>Quartz Hollow</strong><small>Inspect gravel</small></button>
+              <button type="button" class="prospector-site" data-prospect="2"><span>🏞️</span><strong>Willow Ford</strong><small>Inspect the ford</small></button>
+            </div>
+          </div>
+          <div class="prospector-desk panel">
+            <h3>🗺️ Field Notes</h3><p id="prospectorBrief">Start an expedition to get your map and first set of clues.</p>
+            <div id="prospectorClues" class="prospector-clues" aria-live="polite"></div>
+            <div id="prospectorOptions" class="prospector-options"></div>
+            <p id="prospectorFeedback" role="status" aria-live="polite">The creek is peaceful today.</p>
+            <div class="action-row"><button id="prospectorStart" class="primary">Begin Expedition</button><button type="button" id="prospectorHint" class="secondary" disabled>Ask the Old Prospector</button><button type="button" data-jump="cozy" class="secondary">Rest on the Porch</button></div>
+            <p id="prospectorRecord" class="prospector-record">Expeditions: 0 · Finds: 0</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="horsechase" class="view">
+        <div class="section-heading"><div><p class="kicker">INTERACTIVE FRONTIER ACTION</p><h2>🐎 Horseback Chase: The Stolen Mailbag</h2></div><span class="badge">Ride • Dodge • Choose</span></div>
+        <p>The courier's mailbag has been snatched! Chase the rider through the territory. Steer between three trails with the buttons or ← ↓ → arrow keys. There's no penalty if you prefer to watch the sunset instead.</p>
+        <div class="chase-arena" id="chaseArena" role="img" aria-label="Illustrated scrolling Western trail with three lanes and a moving rider">
+          <div class="chase-sun"></div><div class="chase-mesa mesa-one"></div><div class="chase-mesa mesa-two"></div>
+          <div class="chase-ground"><div class="chase-trail-lines"></div><div id="chaseHazard" class="chase-hazard" aria-hidden="true"></div><div id="chaseHorse" class="chase-horse" aria-hidden="true">🏇</div></div>
+          <div class="chase-overlay" id="chaseOverlay"><strong>The trail is calling!</strong><span>Choose Start Ride, then steer around the obstacles.</span></div>
+        </div>
+        <div class="chase-meter"><span id="chaseRound">Trail 0 of 6</span><span id="chaseCountdown">Ready to ride</span><span id="chaseRecord">Rides: 0 · Rescues: 0</span></div>
+        <div class="chase-controls"><button id="chaseLeft" class="secondary" disabled>← Left Trail</button><button id="chaseMiddle" class="secondary" disabled>↑ Center Trail</button><button id="chaseRight" class="secondary" disabled>Right Trail →</button></div>
+        <div class="panel chase-report" aria-live="polite" id="chaseReport"><h3>Your horse is ready.</h3><p>Six quick turns stand between you and the stolen mailbag. Play as often as you like.</p></div>
+        <div class="action-row"><button class="primary" id="chaseStart">Start Ride</button><button class="secondary" id="chaseEnd" disabled>End Ride</button><button class="secondary" data-jump="cozy">Just Visit the Front Porch</button></div>
+      </section>
+
+
+      <section id="saloonpiano" class="view">
+        <div class="section-heading"><div><p class="kicker">LIVE MUSIC AT THE GOLDEN SPUR</p><h2>🎹 The Saloon Piano</h2></div><span class="badge">Play • Listen • Repeat</span></div>
+        <p>Make up a tune, or play a piano memory round with Rosa Bell. Listen to the melody and repeat it on the keys. You can use the touch buttons or keys 1–5. No time limit and no penalty for mistakes.</p>
+        <div class="saloon-stage"><div class="saloon-curtain">✦ THE GOLDEN SPUR ✦</div><div class="saloon-piano" id="saloonKeys" aria-label="Five-key playable saloon piano">
+          <button class="piano-key" data-note="0" aria-label="Play C, keyboard 1"><span>♪</span><b>C</b><small>1</small></button>
+          <button class="piano-key" data-note="1" aria-label="Play D, keyboard 2"><span>♫</span><b>D</b><small>2</small></button>
+          <button class="piano-key" data-note="2" aria-label="Play E, keyboard 3"><span>♪</span><b>E</b><small>3</small></button>
+          <button class="piano-key" data-note="3" aria-label="Play G, keyboard 4"><span>♫</span><b>G</b><small>4</small></button>
+          <button class="piano-key" data-note="4" aria-label="Play A, keyboard 5"><span>♪</span><b>A</b><small>5</small></button>
+        </div><p id="saloonMusicStatus" role="status" aria-live="polite">The room is yours. Play freely, or start a melody challenge.</p></div>
+        <div class="panel"><div class="action-row"><button class="primary" id="saloonBegin">Start Melody</button><button class="secondary" id="saloonReplay" disabled>Hear It Again</button><button class="secondary" id="saloonFree">Free Play</button><button class="secondary" id="saloonMute" aria-pressed="false">🔊 Sound On</button></div><p id="saloonProgress">Your longest melody: 0 notes · Songs learned: 0</p><button data-jump="cozy" class="secondary">Leave for the Front Porch</button></div>
+      </section>
+
+      <section id="achievements" class="view">
+        <div class="section-heading"><div><p class="kicker">TRAIL TROPHY CABINET</p><h2>Your Western World Achievements</h2></div><span class="badge">Saved in your browser</span></div>
+        <div class="achievement-grid" id="achievementGrid"></div>
+      </section>
+
+      <section id="festival" class="view">
+        <div class="section-heading"><div><p class="kicker">DUSTY TRAIL FOUNDERS DAY</p><h2>Town Festival</h2></div><span class="badge">Games • food • contests • music</span></div>
+        <div class="festival-grid" id="festivalGrid"></div>
+        <div class="panel" id="festivalStage"><h3>The bunting is up.</h3><p>Wander the festival. Enter a contest, listen to music, eat pie, or just people-watch.</p></div>
+      </section>
+
+      <section id="cozy" class="view">
+        <div class="section-heading"><div><p class="kicker">FRONT PORCH MODE</p><h2>You don't have to accomplish anything here.</h2></div></div>
+        <div class="porch"><div class="rocker">🪑</div><div><h3>Front Porch at Sunset</h3><p id="porchText">The street is getting quiet. Somewhere down the block, a piano plays softly through an open saloon window.</p><div class="porch-actions"><button class="secondary" data-action="porch-story">Tell Me Something Gentle</button><button class="secondary" data-action="porch-scene">Change the Scene</button><button class="secondary" data-action="porch-silence">Just Sit Here</button></div></div></div>
+      </section>
+    </main>
+
+    <dialog id="journalDialog"><div class="journal"><button class="close" data-action="close-journal">✕</button><p class="kicker">YOUR TRAIL JOURNAL</p><h2>Dusty Trail Memories</h2><div id="journalBody"></div><button class="secondary" data-action="reset-progress">Reset My Western World Progress</button></div></dialog>
+    <button id="floatingHome" class="floating-home" title="Return to Town Square">🏠 Town Square</button>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <footer><p>Templar's Western World • Built for wandering, playing, imagining, learning, role-playing, and resting.</p></footer>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
