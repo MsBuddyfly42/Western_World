@@ -115,3 +115,6 @@ button:focus-visible,a:focus-visible{outline:3px solid #087b87;outline-offset:4p
 @media(prefers-reduced-motion:reduce){.primary,.secondary,.nav-btn,.game-tab,.choice-card,.role-card{transition:none!important}}
 
 /* END 2026 COLOR PASS */
+
+/* ACTUAL ILLUSTRATED FRONTIER SCENE */
+.hero.illustrated-frontier{min-height:530px;isolation:isolate}.hero.illustrated-frontier .world-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;animation:frontierSceneEnter 1.1s ease both}.hero.illustrated-frontier .sun,.hero.illustrated-frontier .mountains,.hero.illustrated-frontier .stars{display:none}.hero.illustrated-frontier .hero-content{z-index:3;background:#442519a9;border:1px solid #ffdfab99;backdrop-filter:blur(5px);border-radius:26px;max-width:780px;padding:30px 32px;box-shadow:0 20px 58px #2f1b1d8c}.hero.illustrated-frontier .hero-content h1{font-size:clamp(2.35rem,6vw,5rem)}.hero.illustrated-frontier .hero-actions button{min-height:48px}@keyframes frontierSceneEnter{from{opacity:.5;transform:scale(1.04)}to{opacity:1;transform:scale(1)}}@media(max-width:650px){.hero.illustrated-frontier{min-height:570px}.hero.illustrated-frontier .hero-content{padding:21px 16px;max-width:94vw}.hero.illustrated-frontier .world-art{object-position:50% center}}@media(prefers-reduced-motion:reduce){.hero.illustrated-frontier .world-art{animation:none}}
