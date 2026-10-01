@@ -96,3 +96,22 @@ button:not(:disabled):active{transform:translateY(2px) scale(.985)}.primary:hove
 #placePanel:focus{outline:3px solid #8a4a1f;outline-offset:4px}
 #placeOutcome:empty{display:none}
 @media(max-width:600px){#placePanel{scroll-margin-top:95px}.town-map .building.is-selected{outline-width:3px;outline-offset:2px}}
+
+/* WESTERN WORLD • Technicolor frontier polish • 2026 */
+:root{--cream:#fff2d2;--rust:#d55134;--gold:#f5bb49;--teal:#1d8a87;--blue:#397fba;--plum:#864975;--paper:#fff3cf}
+body{background-color:#fae5b9;background-image:radial-gradient(circle at 12% 15%,#ffd69899,transparent 28rem),radial-gradient(circle at 88% 22%,#a8e5d955,transparent 32rem),radial-gradient(#7d4d2c16 1px,transparent 1px);background-size:auto,auto,18px 18px}
+.hero{background:linear-gradient(180deg,#3d8dc3 0%,#e3a161 47%,#dd7046 72%,#833f35 100%);border-bottom-color:#663322}
+.hero:after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 77% 22%,#ffe8a04d,transparent 27%)}
+.hero h1{text-shadow:0 4px 0 #6a3529,0 12px 32px #4d271a99;letter-spacing:.025em}
+.hero .sun{background:#fff1ac;box-shadow:0 0 55px 18px #ffe68a99}
+.hero .mountains{filter:drop-shadow(0 -6px 14px #642c3250)}
+.primary{background:linear-gradient(135deg,#ffd273,#f2a842);color:#4a2419}
+.secondary{background:linear-gradient(135deg,#fff5dc,#ffdfaf);border-color:#af7954}
+.primary,.secondary,.nav-btn,.game-tab,.choice-card,.role-card{transition:transform .2s ease,box-shadow .2s ease,filter .2s ease}
+.primary:hover,.secondary:hover,.nav-btn:hover,.game-tab:hover,.choice-card:hover,.role-card:hover{transform:translateY(-3px);filter:saturate(1.12);box-shadow:0 10px 22px #723a2850}
+.statusbar{background:linear-gradient(100deg,#fff0ca,#cdeee1);border-bottom:2px solid #aa774b}
+button:focus-visible,a:focus-visible{outline:3px solid #087b87;outline-offset:4px}
+@media(max-width:700px){.hero h1{font-size:clamp(2.4rem,9vw,4.3rem)}.hero-actions button{min-height:48px}}
+@media(prefers-reduced-motion:reduce){.primary,.secondary,.nav-btn,.game-tab,.choice-card,.role-card{transition:none!important}}
+
+/* END 2026 COLOR PASS */
