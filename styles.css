@@ -88,3 +88,11 @@ button:not(:disabled):active{transform:translateY(2px) scale(.985)}.primary:hove
 @media(max-width:380px){.finder-results{grid-template-columns:1fr}.explorer-heading strong{font-size:1rem}.explorer-toggle{padding:9px 11px;font-size:.85rem}.town-map{padding:9px;gap:8px}.town-map .building{font-size:1.3rem;padding:7px 3px;min-height:80px}}
 @media(hover:none){.choice-card:hover,.adventure-card:hover,.role-card:hover,.history-card:hover{transform:none}button:not(:disabled):hover{transform:none}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}.view.active-view{animation:none}}
+
+
+/* Selected town destination and revealed scene */
+.town-map .building.is-selected{outline:5px solid #ffe49a;outline-offset:4px;filter:brightness(1.2);transform:translateY(-4px);z-index:5}
+#placePanel{scroll-margin-top:135px}
+#placePanel:focus{outline:3px solid #8a4a1f;outline-offset:4px}
+#placeOutcome:empty{display:none}
+@media(max-width:600px){#placePanel{scroll-margin-top:95px}.town-map .building.is-selected{outline-width:3px;outline-offset:2px}}
