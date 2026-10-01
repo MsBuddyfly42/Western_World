@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body data-time="sunset">
+  <a class="skip-link" href="#mainContent">Skip to activities</a>
   <div id="app">
     <header class="hero">
       <div class="sun"></div><div class="stars"></div><div class="mountains"></div>
@@ -30,7 +31,18 @@
       <button class="tiny" data-action="open-journal">Open Trail Journal</button>
     </div>
 
-    <nav class="topnav" aria-label="Main navigation">
+    <div class="explorer-toolbar" id="explorerToolbar">
+      <div class="explorer-heading"><div><span class="explorer-eyebrow">YOUR WESTERN ADVENTURE</span><strong id="currentLocation">Town Square</strong></div><button type="button" id="explorerToggle" class="secondary explorer-toggle" aria-controls="activityFinder" aria-expanded="false">☰ Explore activities</button></div>
+      <div class="activity-finder" id="activityFinder" hidden>
+        <label class="finder-label" for="activitySearch">Find a place, game, or activity</label>
+        <input type="search" id="activitySearch" placeholder="Try mystery, horse, saloon, porch…" autocomplete="off" />
+        <div class="finder-categories" id="finderCategories" role="group" aria-label="Filter activities"></div>
+        <p class="finder-count" id="finderCount" role="status" aria-live="polite"></p>
+        <div class="finder-results" id="finderResults"></div>
+      </div>
+      <div class="favorite-bar" aria-label="Quick activities"><button type="button" data-jump="home">🏠 Town</button><button type="button" data-jump="explore">🐎 Wander</button><button type="button" data-jump="mystery">🔎 Mysteries</button><button type="button" data-jump="games">🎯 Games</button><button type="button" data-jump="cozy">🌙 Front Porch</button></div>
+    </div>
+    <nav class="topnav" aria-label="All activities" id="fullNavigation" hidden>
       <button data-view="home" class="nav-btn active">Town Square</button>
       <button data-view="explore" class="nav-btn">Free Explore</button>
       <button data-view="territory" class="nav-btn">Territory Map</button>
@@ -85,18 +97,18 @@
       <button data-view="cozy" class="nav-btn">Front Porch</button>
     </nav>
 
-    <main>
+    <main id="mainContent" tabindex="-1">
       <section id="home" class="view active-view">
         <div class="section-heading"><div><p class="kicker">DUSTY TRAIL TERRITORY</p><h2>What do you feel like doing?</h2></div><span class="badge">No pressure. No required path.</span></div>
         <div class="choice-grid">
-          <article class="choice-card amber" data-jump="explore"><span class="icon">🐎</span><h3>Just Wander</h3><p>Stroll town, enter buildings, meet characters, and poke around.</p></article>
-          <article class="choice-card rust" data-jump="adventures"><span class="icon">🚂</span><h3>Take an Adventure</h3><p>Ride the rails, work the ranch, visit a ghost town, or head down the trail.</p></article>
-          <article class="choice-card red" data-jump="mystery"><span class="icon">🔎</span><h3>Solve a Mystery</h3><p>Track clues, question suspects, and crack cases around the territory.</p></article>
-          <article class="choice-card teal" data-jump="games"><span class="icon">🎯</span><h3>Play Something</h3><p>Try frontier games, score challenges, luck rounds, and trail decisions.</p></article>
-          <article class="choice-card blue" data-jump="roleplay"><span class="icon">🤠</span><h3>Become Somebody</h3><p>Play a sheriff, rancher, journalist, bounty hunter, traveler, or saloon owner.</p></article>
-          <article class="choice-card gold" data-jump="history"><span class="icon">📜</span><h3>Step Into History</h3><p>Explore Old West themes while separating history, legend, and movie myth.</p></article>
-          <article class="choice-card plum" data-jump="cozy"><span class="icon">🌙</span><h3>Take It Easy</h3><p>Sit on the porch, watch town life, or do absolutely nothing.</p></article>
-          <article class="choice-card ink" data-jump="gazette"><span class="icon">📰</span><h3>Read the Gazette</h3><p>See the latest headline, rumor, weather, notice, and odd little happenings.</p></article>
+          <article role="button" tabindex="0" class="choice-card amber" data-jump="explore"><span class="icon">🐎</span><h3>Just Wander</h3><p>Stroll town, enter buildings, meet characters, and poke around.</p></article>
+          <article role="button" tabindex="0" class="choice-card rust" data-jump="adventures"><span class="icon">🚂</span><h3>Take an Adventure</h3><p>Ride the rails, work the ranch, visit a ghost town, or head down the trail.</p></article>
+          <article role="button" tabindex="0" class="choice-card red" data-jump="mystery"><span class="icon">🔎</span><h3>Solve a Mystery</h3><p>Track clues, question suspects, and crack cases around the territory.</p></article>
+          <article role="button" tabindex="0" class="choice-card teal" data-jump="games"><span class="icon">🎯</span><h3>Play Something</h3><p>Try frontier games, score challenges, luck rounds, and trail decisions.</p></article>
+          <article role="button" tabindex="0" class="choice-card blue" data-jump="roleplay"><span class="icon">🤠</span><h3>Become Somebody</h3><p>Play a sheriff, rancher, journalist, bounty hunter, traveler, or saloon owner.</p></article>
+          <article role="button" tabindex="0" class="choice-card gold" data-jump="history"><span class="icon">📜</span><h3>Step Into History</h3><p>Explore Old West themes while separating history, legend, and movie myth.</p></article>
+          <article role="button" tabindex="0" class="choice-card plum" data-jump="cozy"><span class="icon">🌙</span><h3>Take It Easy</h3><p>Sit on the porch, watch town life, or do absolutely nothing.</p></article>
+          <article role="button" tabindex="0" class="choice-card ink" data-jump="gazette"><span class="icon">📰</span><h3>Read the Gazette</h3><p>See the latest headline, rumor, weather, notice, and odd little happenings.</p></article>
         </div>
         <section class="town-board"><div><p class="kicker">TODAY IN TOWN</p><h3 id="townHeadline">The stagecoach from Copper Creek just arrived.</h3><p id="townDetail">Three strangers stepped off, and one of them is carrying a locked metal case.</p></div><button class="secondary" data-action="refresh-town">New Town Event</button></section>
       </section>
@@ -513,6 +525,7 @@
     <dialog id="journalDialog"><div class="journal"><button class="close" data-action="close-journal">✕</button><p class="kicker">YOUR TRAIL JOURNAL</p><h2>Dusty Trail Memories</h2><div id="journalBody"></div><button class="secondary" data-action="reset-progress">Reset My Western World Progress</button></div></dialog>
     <button id="floatingHome" class="floating-home" title="Return to Town Square">🏠 Town Square</button>
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <button id="backToTop" type="button" aria-label="Return to top" title="Back to top">↑</button>
     <footer><p>Templar's Western World • Built for wandering, playing, imagining, learning, role-playing, and resting.</p></footer>
   </div>
   <script src="script.js"></script>

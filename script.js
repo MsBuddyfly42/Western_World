@@ -6,7 +6,19 @@ function save(){localStorage.setItem('westernWorldState',JSON.stringify(state));
 function renderStatus(){statusRole.textContent=state.role;statusRep.textContent=state.rep;statusItems.textContent=state.items.length;document.body.dataset.time=state.time;}
 function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);}
 function reward(rep=1,item=null,discovery=null){state.rep+=rep;if(item&&!state.items.includes(item)){state.items.push(item);toast(`Keepsake found: ${item}`);}if(discovery&&!state.discoveries.includes(discovery))state.discoveries.push(discovery);save();}
-function showView(id){views.forEach(v=>v.classList.toggle('active-view',v.id===id));navBtns.forEach(b=>b.classList.toggle('active',b.dataset.view===id));window.scrollTo({top:420,behavior:'smooth'});}
+function showView(id){
+ const target=document.getElementById(id);
+ if(!target||!target.classList.contains('view'))return;
+ views.forEach(v=>v.classList.toggle('active-view',v.id===id));
+ navBtns.forEach(b=>{b.classList.toggle('active',b.dataset.view===id);if(b.dataset.view===id)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
+ const selected=navBtns.find(b=>b.dataset.view===id);const location=document.getElementById('currentLocation');if(location)location.textContent=selected?selected.textContent.trim():'Town Square';
+ document.querySelectorAll('.favorite-bar [data-jump]').forEach(b=>{if(b.dataset.jump===id)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
+ const finder=document.getElementById('activityFinder');const toggle=document.getElementById('explorerToggle');if(finder){finder.hidden=true;toggle.setAttribute('aria-expanded','false');toggle.textContent='☰ Explore activities';}
+ if(window.history&&window.history.replaceState)window.history.replaceState(null,'','#'+id);
+ const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ const top=document.getElementById('explorerToolbar').getBoundingClientRect().top+window.scrollY;
+ window.scrollTo({top:Math.max(0,top),behavior:reduce?'auto':'smooth'});
+ }
 navBtns.forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));$$('[data-jump]').forEach(c=>c.addEventListener('click',()=>showView(c.dataset.jump)));$('[data-action="open-town"]').onclick=()=>showView('explore');
 
 const townEvents=[
@@ -1106,3 +1118,25 @@ document.getElementById('saloonMute').onclick=()=>{saloonMuted=!saloonMuted;docu
 document.addEventListener('keydown',e=>{if(!document.getElementById('saloonpiano').classList.contains('active-view')||['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName)||e.ctrlKey||e.altKey||e.metaKey)return;if(['1','2','3','4','5'].includes(e.key)){e.preventDefault();saloonPress(Number(e.key)-1);}});
 const pianoJump=document.getElementById('quickJump');if(pianoJump&&!Array.from(pianoJump.options).some(o=>o.value==='saloonpiano')){const o=document.createElement('option');o.value='saloonpiano';o.textContent='Golden Spur Saloon Piano';pianoJump.appendChild(o);}
 achievementDefs.push({id:'saloonmusician',icon:'🎹',name:'Golden Spur Musician',desc:'Learn three melodies at the Golden Spur.',ok:()=>state.saloonSongs>=3});saloonRender();checkAchievements();
+
+/* Activity finder and keyboard-friendly navigation; does not alter the game's save format. */
+(function enhanceExperience(){
+ const finder=document.getElementById('activityFinder'),toggle=document.getElementById('explorerToggle'),input=document.getElementById('activitySearch'),results=document.getElementById('finderResults'),catWrap=document.getElementById('finderCategories'),count=document.getElementById('finderCount');
+ if(!finder||!toggle)return;
+ const groupNames=['All','Explore','Stories','Games','Frontier Life','Learn & Create','Relax'];
+ const sectionGroups={home:'Explore',explore:'Explore',territory:'Explore',adventures:'Stories',roleplay:'Stories',mystery:'Stories',games:'Games',history:'Learn & Create',gazette:'Learn & Create',people:'Stories',bounties:'Stories',homestead:'Frontier Life',jobs:'Frontier Life',treasure:'Stories',railroad:'Explore',switchyard:'Games',campfire:'Relax',market:'Frontier Life',wardrobe:'Frontier Life',encounters:'Explore',sagatrail:'Stories',ownership:'Frontier Life',schoolhouse:'Learn & Create',postoffice:'Frontier Life',faircircuit:'Frontier Life',npstories:'Stories',deepmysteries:'Stories',calendar:'Frontier Life',museum:'Learn & Create',picturehouse:'Stories',rodeo:'Games',council:'Frontier Life',album:'Relax',legendmaker:'Learn & Create',almanac:'Learn & Create',timetrial:'Learn & Create',ponyexpress:'Games',riverlanding:'Explore',cookhouse:'Frontier Life',stagecoach:'Explore',socialhall:'Relax',casegenerator:'Stories',nightwatch:'Stories',moodboard:'Explore',expeditions:'Stories',passport:'Explore',wantedmaker:'Learn & Create',horsechase:'Games',saloonpiano:'Games',achievements:'Explore',festival:'Games',cozy:'Relax',prospector:'Games'};
+ const activities=[...document.querySelectorAll('.nav-btn')].map(b=>({id:b.dataset.view,name:b.textContent.trim(),group:sectionGroups[b.dataset.view]||'Explore'}));
+ activities.push({id:'prospector',name:"⛏️ Prospector's Creek",group:'Games'});
+ let group='All';
+ function render(){const query=input.value.trim().toLocaleLowerCase();const filtered=activities.filter(a=>(group==='All'||group===a.group)&&(!query||(a.name+' '+a.group+' '+a.id).toLocaleLowerCase().includes(query)));count.textContent=filtered.length+' activities';results.replaceChildren();for(const a of filtered){const b=document.createElement('button');b.type='button';b.textContent=a.name;b.onclick=()=>showView(a.id);results.append(b);}if(!filtered.length){const p=document.createElement('p');p.className='finder-empty';p.textContent='No matches yet. Try another word or category.';results.append(p);}}
+ for(const name of groupNames){const b=document.createElement('button');b.type='button';b.textContent=name;b.setAttribute('aria-pressed',String(name===group));b.onclick=()=>{group=name;catWrap.querySelectorAll('button').forEach(btn=>btn.setAttribute('aria-pressed',String(btn===b)));render();};catWrap.append(b);}
+ toggle.onclick=()=>{const show=finder.hidden;finder.hidden=!show;toggle.setAttribute('aria-expanded',String(show));toggle.textContent=show?'✕ Close activities':'☰ Explore activities';if(show){render();input.focus();}};
+ input.addEventListener('input',render);
+ input.addEventListener('keydown',e=>{if(e.key==='Enter'){const first=results.querySelector('button');if(first)first.click();}if(e.key==='Escape'){finder.hidden=true;toggle.setAttribute('aria-expanded','false');toggle.textContent='☰ Explore activities';toggle.focus();}});
+ document.querySelectorAll('[data-jump]').forEach(el=>{if(!el.matches('.choice-card'))return;el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();showView(el.dataset.jump);}});});
+ document.querySelectorAll('.favorite-bar [data-jump]').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.jump)));
+ const topBtn=document.getElementById('backToTop');function updateTop(){topBtn.classList.toggle('is-visible',window.scrollY>750);}window.addEventListener('scroll',updateTop,{passive:true});topBtn.onclick=()=>window.scrollTo({top:0,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});updateTop();
+ document.addEventListener('keydown',e=>{if(e.key==='/'&&!e.ctrlKey&&!e.metaKey&&!e.altKey&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)&&!document.querySelector('dialog[open]')){e.preventDefault();finder.hidden=false;toggle.setAttribute('aria-expanded','true');toggle.textContent='✕ Close activities';render();input.focus();}});
+ const initial=decodeURIComponent(location.hash.slice(1));if(initial&&document.getElementById(initial)?.classList.contains('view'))showView(initial);
+ else{document.getElementById('currentLocation').textContent='Town Square';document.querySelector('.favorite-bar [data-jump="home"]')?.setAttribute('aria-current','page');}
+})();

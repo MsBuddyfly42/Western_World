@@ -1,5 +1,8 @@
-Templar's Western World — Version 7
+TEMPLAR’S WESTERN WORLD — UX UPGRADE
 
-Community Expansion: frontier businesses, schoolhouse, post office missions, rotating fair circuit, character storylines, extended case files, new achievements, and expanded browser-saved journal progress.
+Open index.html in a modern browser. No build step, dependencies, or internet connection required.
+For Render Static Site, put these files at the root of your repository and use Publish Directory: .
+This is a replacement for the earlier site, not an additional site.
+Saved adventures use the same localStorage key (westernWorldState) as the original. Browser saves remain on the same browser and origin; a new Render domain or opening a local file may use a different storage area.
 
-Open index.html in a modern browser.
+NEW: searchable activity finder with filters, mobile-friendly town map, keyboard navigation, reduced-motion support, better button focus styles, sticky activity shortcuts, back-to-top and deep links. Press / to open search.
