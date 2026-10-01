@@ -1140,3 +1140,31 @@ achievementDefs.push({id:'saloonmusician',icon:'🎹',name:'Golden Spur Musician
  const initial=decodeURIComponent(location.hash.slice(1));if(initial&&document.getElementById(initial)?.classList.contains('view'))showView(initial);
  else{document.getElementById('currentLocation').textContent='Town Square';document.querySelector('.favorite-bar [data-jump="home"]')?.setAttribute('aria-current','page');}
 })();
+
+
+/* Town-map interaction fix: show a destination's scene immediately. */
+(function improveTownVisits(){
+  const map=document.getElementById('townMap');
+  const panel=document.getElementById('placePanel');
+  if(!map||!panel)return;
+  panel.setAttribute('tabindex','-1');
+  map.addEventListener('click',event=>{
+    const building=event.target.closest('.building[data-place]');
+    if(!building)return;
+    map.querySelectorAll('.building').forEach(button=>{
+      const selected=button===building;
+      button.classList.toggle('is-selected',selected);
+      button.setAttribute('aria-pressed',String(selected));
+    });
+    const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    requestAnimationFrame(()=>{
+      panel.scrollIntoView({behavior:reduced?'auto':'smooth',block:'start'});
+      panel.focus({preventScroll:true});
+    });
+  });
+  panel.addEventListener('click',event=>{
+    if(!event.target.closest('.place-action'))return;
+    const outcome=panel.querySelector('#placeOutcome');
+    if(outcome)outcome.setAttribute('role','status');
+  });
+})();
