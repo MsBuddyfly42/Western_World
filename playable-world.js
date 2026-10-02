@@ -611,3 +611,29 @@ sf.querySelector('#wwSfExit').onclick=()=>sf.classList.remove('open');
 const top=game.querySelector('.ww-top');const btn=document.createElement('button');btn.type='button';btn.className='ww-questbtn';btn.textContent='★ Sheriff';btn.onclick=()=>{sf.classList.add('open');draw();};top.insertBefore(btn,game.querySelector('.ww-close'));
 draw();
 })();
+
+
+/* Final world polish: completion tracker, save health, mobile tuning, collision feedback, accessibility and Render-safe cleanup. */
+(()=>{
+'use strict';
+const game=document.querySelector('.ww-game'),viewport=document.querySelector('.ww-viewport');if(!game||!viewport||game.dataset.finalPolish)return;game.dataset.finalPolish='1';
+const css=document.createElement('style');css.textContent=`
+.ww-finalhud{position:absolute;right:12px;bottom:164px;z-index:178;width:min(280px,45%);background:#24170fe8;color:#fff1ce;border:2px solid #c79b5c;border-radius:12px;padding:9px 11px;font-size:.72rem;box-shadow:0 8px 20px #0006}.ww-finalhud strong{display:block;color:#ffd98d;margin-bottom:4px}.ww-finalgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}.ww-finalgrid span{background:#3d2a1f;border-radius:6px;padding:3px 5px}.ww-finalgrid .done{color:#aee89d}.ww-health{font-size:.68rem;color:#e0c9a6;margin-top:6px}.ww-finalbtn{border:1px solid #e9c47f;background:#3e281e;color:#fff5d8;border-radius:9px;min-height:40px;padding:7px 10px;font-weight:800;cursor:pointer}.ww-focusring:focus-visible{outline:3px solid #ffe19a;outline-offset:3px}.ww-hitflash{animation:wwhit .18s ease-out}@keyframes wwhit{50%{filter:brightness(1.5)}}@media(max-width:650px){.ww-finalhud{right:8px;bottom:150px;width:48%;font-size:.62rem}.ww-finalgrid{grid-template-columns:1fr}.ww-top{gap:6px}.ww-top button{font-size:.7rem}.ww-viewport{min-height:540px}.ww-controls{bottom:10px}.ww-prompt{bottom:84px}}
+@media(prefers-reduced-motion:reduce){.ww-hitflash{animation:none!important}}
+`;document.head.append(css);
+const areas=[
+['Silver Needle Mine','western-silver-mine'],['Red Rock Ranch','western-red-rock-ranch'],['Blackwater Crossing','western-blackwater'],['Copper Creek','western-copper-creek'],['Whispering Mesa','western-whispering-mesa'],['Canyon Ridge','western-canyon-ridge'],['Railroad Run','western-railroad-run'],['Courthouse','western-courthouse'],['Frontier Clinic','western-frontier-clinic'],['Golden Spur Saloon','western-golden-spur-hub'],['Sunset Hotel','western-sunset-hotel'],['Store & Kitchen','western-market-kitchen'],['Frontier Gazette','western-gazette-play'],['Sheriff\'s Office','western-sheriff-office']
+];
+const hud=document.createElement('div');hud.className='ww-finalhud';hud.innerHTML='<strong>🏁 World Completion</strong><div class="ww-finalgrid"></div><div class="ww-health">Save system: checking…</div>';viewport.append(hud);
+function status(){const grid=hud.querySelector('.ww-finalgrid');grid.replaceChildren();let done=0;for(const [name,key] of areas){let complete=false;try{complete=!!JSON.parse(localStorage.getItem(key)||'{}').complete}catch{}if(complete)done++;const s=document.createElement('span');s.className=complete?'done':'';s.textContent=(complete?'✓ ':'○ ')+name;grid.append(s);}hud.querySelector('strong').textContent='🏁 World Completion • '+done+'/'+areas.length;let ok=true;try{localStorage.setItem('__western_test','1');localStorage.removeItem('__western_test');}catch{ok=false;}hud.querySelector('.ww-health').textContent='Save system: '+(ok?'healthy':'browser storage unavailable');}
+const top=game.querySelector('.ww-top');const btn=document.createElement('button');btn.type='button';btn.className='ww-finalbtn';btn.textContent='🏁 Completion';btn.onclick=()=>{hud.hidden=!hud.hidden;status();};top.insertBefore(btn,game.querySelector('.ww-close'));
+setInterval(status,1800);status();
+// Improve focusability and touch behavior across generated controls.
+game.querySelectorAll('button').forEach(b=>b.classList.add('ww-focusring'));
+// Prevent stuck mobile movement keys when app loses focus.
+window.addEventListener('blur',()=>{game.querySelectorAll('[data-dir]').forEach(b=>b.dispatchEvent(new PointerEvent('pointercancel',{bubbles:true})));});
+// Give collision feedback when player is pressed against architecture.
+const player=game.querySelector('.ww-player');const obs=new MutationObserver(()=>{if(!player)return;const x=parseFloat(player.style.left)||0,y=parseFloat(player.style.top)||0;for(const el of game.querySelectorAll('.ww-building')){const bx=parseFloat(el.style.left)||0,by=parseFloat(el.style.top)||0,bw=parseFloat(el.style.width)||0,bh=parseFloat(el.style.height)||0;if(x>bx-28&&x<bx+bw+28&&y>by-24&&y<by+bh+18){el.classList.add('ww-hitflash');setTimeout(()=>el.classList.remove('ww-hitflash'),180);break;}}});if(player)obs.observe(player,{attributes:true,attributeFilter:['style']});
+// Keep completion HUD out of the way during modal sub-areas.
+const mo=new MutationObserver(()=>{const overlayOpen=[...viewport.children].some(el=>el!==hud&&el.classList&&[...el.classList].some(c=>/^ww-/.test(c))&&(el.classList.contains('open')));hud.style.opacity=overlayOpen?'.2':'1';hud.style.pointerEvents=overlayOpen?'none':'auto';});mo.observe(viewport,{subtree:true,attributes:true,attributeFilter:['class']});
+})();
