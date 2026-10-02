@@ -128,3 +128,41 @@ const enter=document.querySelector('[data-action="open-town"]');if(enter)enter.t
 window.openWesternPlayable=openGame;
 render();
 })();
+
+/* Frontier Life expansion: moving train, day/night, ambient life, quests, minimap. */
+(()=>{
+'use strict';
+const game=document.querySelector('.ww-game'),world=document.querySelector('.ww-world'),viewport=document.querySelector('.ww-viewport');if(!game||!world||!viewport||game.dataset.frontierLife)return;game.dataset.frontierLife='1';
+const extra=document.createElement('style');extra.textContent=`
+.ww-skyfx{position:absolute;inset:0;pointer-events:none;z-index:2;transition:background .8s,opacity .8s}.ww-skyfx.night{background:linear-gradient(#08152fcf,#1c284bad 55%,#2e2a31a8)}.ww-skyfx.sunset{background:linear-gradient(#8a3f3150,#e17e3840 55%,transparent)}
+.ww-starscape{position:absolute;inset:0;background-image:radial-gradient(circle,#fff 0 1px,transparent 1.5px);background-size:57px 43px;opacity:0;transition:opacity .8s}.ww-skyfx.night .ww-starscape{opacity:.7}
+.ww-firefly{position:absolute;width:5px;height:5px;border-radius:50%;background:#ffe772;box-shadow:0 0 10px #ffe772;opacity:0}.ww-skyfx.night .ww-firefly{opacity:.85;animation:wwfly 4s ease-in-out infinite alternate}@keyframes wwfly{to{transform:translate(24px,-18px);opacity:.25}}
+.ww-train{position:absolute;left:-360px;top:778px;width:320px;height:84px;z-index:18;animation:wwtrain 18s linear infinite;filter:drop-shadow(0 9px 5px #0006)}.ww-engine{position:absolute;left:120px;bottom:9px;width:145px;height:60px;border:5px solid #2d2621;border-radius:8px 20px 5px 5px;background:#35434b}.ww-engine:before{content:'';position:absolute;left:22px;top:-39px;width:38px;height:42px;background:#30383d;border-radius:4px 4px 0 0}.ww-engine:after{content:'';position:absolute;right:20px;top:-22px;border-left:28px solid transparent;border-right:28px solid transparent;border-bottom:35px solid #30383d}.ww-car{position:absolute;left:0;bottom:10px;width:125px;height:54px;border:5px solid #573a2a;background:#a65c34;border-radius:6px}.ww-wheel{position:absolute;bottom:-16px;width:30px;height:30px;border:6px solid #211c19;border-radius:50%;background:#6e655d;animation:wwspin .7s linear infinite}.ww-wheel.a{left:18px}.ww-wheel.b{right:16px}@keyframes wwspin{to{transform:rotate(360deg)}}@keyframes wwtrain{0%{transform:translateX(0)}100%{transform:translateX(2220px)}}
+.ww-wagon{position:absolute;left:-120px;top:505px;font-size:56px;z-index:16;animation:wwwagon 26s linear infinite;filter:drop-shadow(0 5px 3px #0005)}@keyframes wwwagon{to{transform:translateX(2050px)}}
+.ww-smoke{position:absolute;width:22px;height:22px;border-radius:50%;background:#e9dfd0aa;z-index:8;animation:wwsmoke 4s ease-out infinite}@keyframes wwsmoke{to{transform:translate(18px,-90px) scale(2);opacity:0}}
+.ww-questhud{position:absolute;right:12px;top:74px;z-index:72;width:min(280px,43%);background:#2c1b13e8;border:2px solid #d4a760;border-radius:12px;padding:9px 11px;font-size:.78rem;line-height:1.35;box-shadow:0 8px 20px #0007}.ww-questhud strong{display:block;color:#ffd987;margin-bottom:3px}.ww-questhud.done{border-color:#88c477}.ww-questhud[hidden]{display:none}
+.ww-mini{position:absolute;right:12px;bottom:84px;width:118px;height:74px;z-index:71;background:#e2b875dd;border:3px solid #60402a;border-radius:8px;overflow:hidden;pointer-events:none}.ww-mini:before{content:'';position:absolute;left:0;right:0;top:31px;height:18px;background:#c78e55}.ww-mini-dot{position:absolute;width:9px;height:9px;border-radius:50%;background:#e8f1ff;border:2px solid #263c55;transform:translate(-50%,-50%);transition:left .12s linear,top .12s linear}
+.ww-timebtn,.ww-questbtn{border:1px solid #e9c47f;background:#3e281e;color:#fff5d8;border-radius:9px;min-height:40px;padding:7px 10px;font-weight:800;cursor:pointer}
+@media(max-width:650px){.ww-questhud{top:64px;width:52%;font-size:.7rem}.ww-mini{width:88px;height:58px;bottom:82px}.ww-mini:before{top:24px;height:13px}.ww-timebtn,.ww-questbtn{min-height:38px;padding:6px 8px;font-size:.72rem}}
+@media(prefers-reduced-motion:reduce){.ww-train,.ww-wagon,.ww-smoke,.ww-firefly{animation:none!important}.ww-train{left:980px}.ww-wagon{left:760px}}
+`;document.head.append(extra);
+const sky=document.createElement('div');sky.className='ww-skyfx sunset';sky.innerHTML='<div class="ww-starscape"></div>';for(let i=0;i<10;i++){const f=document.createElement('i');f.className='ww-firefly';f.style.left=(80+i*153)+'px';f.style.top=(500+(i%3)*95)+'px';f.style.animationDelay=(-i*.37)+'s';sky.append(f);}world.prepend(sky);
+const train=document.createElement('div');train.className='ww-train';train.innerHTML='<div class="ww-car"><i class="ww-wheel a"></i><i class="ww-wheel b"></i></div><div class="ww-engine"><i class="ww-wheel a"></i><i class="ww-wheel b"></i></div>';world.append(train);
+const wagon=document.createElement('div');wagon.className='ww-wagon';wagon.textContent='🐎🛻';wagon.setAttribute('aria-hidden','true');world.append(wagon);
+[[635,98],[1090,112],[1510,118]].forEach((p,i)=>{const s=document.createElement('i');s.className='ww-smoke';s.style.left=p[0]+'px';s.style.top=p[1]+'px';s.style.animationDelay=(-i*1.2)+'s';world.append(s);});
+const mini=document.createElement('div');mini.className='ww-mini';mini.setAttribute('aria-label','Mini map');mini.innerHTML='<i class="ww-mini-dot"></i>';viewport.append(mini);const dot=mini.firstElementChild;
+let frontier={time:'sunset',visited:[],quest:0};try{frontier={...frontier,...JSON.parse(localStorage.getItem('western-frontier-life')||'{}')}}catch{}const store=()=>{try{localStorage.setItem('western-frontier-life',JSON.stringify(frontier))}catch{}};
+const quests=[
+{name:'Meet the Town',text:'Talk to 3 different townspeople.',test:()=>{try{return (JSON.parse(localStorage.getItem('western-playable-v1')||'{}').talked||[]).length>=3}catch{return false}}},
+{name:'Sharp Eyes',text:'Collect at least 2 hidden keepsakes.',test:()=>{try{return (JSON.parse(localStorage.getItem('western-playable-v1')||'{}').found||[]).length>=2}catch{return false}}},
+{name:'Doors of Dusty Trail',text:'Enter 3 different town buildings.',test:()=>frontier.visited.length>=3}
+];
+const hud=document.createElement('div');hud.className='ww-questhud';viewport.append(hud);
+function drawQuest(){const q=quests[Math.min(frontier.quest,quests.length-1)];if(frontier.quest>=quests.length){hud.classList.add('done');hud.innerHTML='<strong>★ Frontier Explorer</strong>All three starter town quests completed. Free-roam however you like!';return;}hud.classList.toggle('done',q.test());hud.innerHTML='<strong>Quest: '+q.name+'</strong>'+q.text+(q.test()?'<br>✓ Complete — press Quest to claim.':'');}
+const top=game.querySelector('.ww-top');const timeBtn=document.createElement('button');timeBtn.className='ww-timebtn';timeBtn.type='button';timeBtn.textContent='🌅 Time';const questBtn=document.createElement('button');questBtn.className='ww-questbtn';questBtn.type='button';questBtn.textContent='📜 Quest';top.insertBefore(questBtn,game.querySelector('.ww-close'));top.insertBefore(timeBtn,questBtn);
+const times=['day','sunset','night'];function applyTime(){sky.className='ww-skyfx '+frontier.time;timeBtn.textContent=frontier.time==='night'?'🌙 Night':frontier.time==='day'?'☀️ Day':'🌅 Sunset';}
+timeBtn.onclick=()=>{frontier.time=times[(times.indexOf(frontier.time)+1)%times.length];applyTime();store();};
+questBtn.onclick=()=>{const q=quests[frontier.quest];if(!q){drawQuest();return;}if(q.test()){frontier.quest++;store();drawQuest();const msg=game.querySelector('.ww-message');if(msg){msg.textContent='Quest complete! A new frontier task has been added.';msg.hidden=false;setTimeout(()=>msg.hidden=true,2600);}}else{hud.hidden=!hud.hidden;}};
+document.querySelectorAll('.building[data-place]').forEach(b=>b.addEventListener('click',()=>{const p=b.dataset.place;if(p&&!frontier.visited.includes(p)){frontier.visited.push(p);store();drawQuest();}}));
+function updateMini(){const p=world.querySelector('.ww-player');if(!p)return;const x=parseFloat(p.style.left)||850,y=parseFloat(p.style.top)||460;dot.style.left=(x/1800*100)+'%';dot.style.top=(y/1000*100)+'%';drawQuest();requestAnimationFrame(updateMini);}applyTime();drawQuest();requestAnimationFrame(updateMini);
+})();
