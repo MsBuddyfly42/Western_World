@@ -401,3 +401,50 @@ const top=game.querySelector('.ww-top');const btn=document.createElement('button
 const travel=viewport.querySelector('.ww-travel-card div:last-child');if(travel){const old=travel.querySelector('[data-route="Whispering Mesa"]');if(old){old.onclick=e=>{e.stopImmediatePropagation();viewport.querySelector('.ww-travel-overlay')?.classList.remove('open');mesa.classList.add('open');draw();};}}
 draw();
 })();
+
+
+/* Realism pass: architectural doors, wall depth, windows, porch details, interior thresholds, lighting and grounded props. */
+(()=>{
+'use strict';
+const game=document.querySelector('.ww-game'),world=document.querySelector('.ww-world'),viewport=document.querySelector('.ww-viewport');if(!game||!world||!viewport||game.dataset.realismPass)return;game.dataset.realismPass='1';
+const css=document.createElement('style');css.textContent=`
+.ww-building{overflow:visible;background:linear-gradient(90deg,#875236 0 8%,#ad6a42 8% 92%,#7c4931 92%);border-color:#4a2e21;box-shadow:0 14px 0 #4e3022,0 22px 20px #2a1a1270}
+.ww-building:after{content:'';position:absolute;left:8px;right:8px;bottom:-18px;height:18px;background:#65452f;border:3px solid #40291e;border-top:0;box-shadow:0 5px 8px #0004}
+.ww-sign{top:10px;box-shadow:0 3px 0 #6d4328}
+.ww-door{bottom:0;width:58px;height:88px;background:linear-gradient(90deg,#3d281f,#5f3a29 42%,#4a2f23);border:5px solid #2f1f18;box-shadow:inset -9px 0 0 #291b16,inset 0 0 0 2px #75513a}
+.ww-door:before{content:'';position:absolute;left:9px;right:9px;top:10px;height:26px;border:3px solid #2e1e17;background:#65412f;box-shadow:0 35px 0 #65412f}
+.ww-door:after{content:'';position:absolute;right:7px;top:44px;width:7px;height:7px;border-radius:50%;background:#d9b66d;box-shadow:0 0 0 2px #3b281f}
+.ww-window{background:linear-gradient(135deg,#b9e0e7 0 45%,#7fb2c0 46% 100%);border-color:#4a3022;box-shadow:inset 0 0 0 3px #d7c09d,0 2px 0 #3e281d}.ww-window:before,.ww-window:after{content:'';position:absolute;background:#57402f}.ww-window:before{left:50%;top:0;bottom:0;width:3px;transform:translateX(-50%)}.ww-window:after{top:50%;left:0;right:0;height:3px;transform:translateY(-50%)}
+.ww-building.near .ww-door{transform:translateX(-50%) perspective(100px) rotateY(-18deg);transform-origin:left center;transition:transform .25s ease}
+.ww-building .ww-awning{position:absolute;left:12%;right:12%;bottom:77px;height:16px;background:repeating-linear-gradient(90deg,#75422d 0 20px,#d8b06b 20px 40px);border:3px solid #4b3022;transform:skewX(-5deg)}
+.ww-building .ww-post{position:absolute;bottom:-18px;width:9px;height:78px;background:#4a3021;border:2px solid #2d1d16}.ww-building .ww-post.l{left:18px}.ww-building .ww-post.r{right:18px}
+.ww-building .ww-lamp{position:absolute;bottom:98px;font-size:20px;filter:drop-shadow(0 0 6px #ffc86a)}.ww-building .ww-lamp.l{left:8px}.ww-building .ww-lamp.r{right:8px}
+.ww-building .ww-crate{position:absolute;bottom:-5px;font-size:28px;filter:drop-shadow(0 4px 2px #0004)}.ww-building .ww-crate.l{left:-12px}.ww-building .ww-crate.r{right:-12px}
+.ww-street-shadow{position:absolute;z-index:8;height:24px;border-radius:50%;background:#3b24173d;filter:blur(2px);pointer-events:none}
+.ww-boardwalk{position:absolute;left:0;right:0;height:56px;background:repeating-linear-gradient(90deg,#8b6545 0 42px,#755236 42px 44px);border-top:5px solid #5d402d;border-bottom:5px solid #4d3325;z-index:7}
+.ww-boardwalk.north{top:323px}.ww-boardwalk.south{top:620px}
+.ww-roomscene{background:linear-gradient(#8f6747 0 51%,#6f4d34 51%);perspective:800px}.ww-roomscene:after{content:'';position:absolute;inset:auto 0 0;height:49%;background:repeating-linear-gradient(90deg,#6c4932 0 48px,#5d3e2b 48px 50px);opacity:.98}
+.ww-room-back{top:34px;box-shadow:0 4px 0 #533623}
+.ww-room-table{bottom:106px;background:linear-gradient(#775036,#5b3b29);box-shadow:0 8px 0 #3f281c,0 16px 16px #0005}.ww-room-table:before{content:'';position:absolute;left:8%;right:8%;top:10px;height:8px;background:#a47a54}.ww-room-npc{bottom:125px;filter:drop-shadow(0 8px 4px #0004)}
+.ww-roomscene .ww-wall-door{position:absolute;left:8%;bottom:88px;width:74px;height:132px;background:linear-gradient(90deg,#4a3023,#6d452f);border:7px solid #3a251b;box-shadow:inset -12px 0 0 #2d1d16}.ww-roomscene .ww-wall-door:before{content:'';position:absolute;left:12px;right:12px;top:14px;height:34px;border:4px solid #3c281e;box-shadow:0 48px 0 #5d3b2b}.ww-roomscene .ww-wall-door:after{content:'';position:absolute;right:10px;top:64px;width:8px;height:8px;border-radius:50%;background:#d0ae68}
+.ww-roomscene .ww-wall-window{position:absolute;right:10%;top:56px;width:110px;height:82px;background:linear-gradient(#97c3d0,#6a9aad);border:9px solid #493125;box-shadow:inset 0 0 0 3px #d6bd96}.ww-roomscene .ww-wall-window:before,.ww-roomscene .ww-wall-window:after{content:'';position:absolute;background:#4d372a}.ww-roomscene .ww-wall-window:before{left:50%;top:0;bottom:0;width:4px}.ww-roomscene .ww-wall-window:after{top:50%;left:0;right:0;height:4px}
+.ww-roomscene .ww-rug{position:absolute;left:30%;right:24%;bottom:26px;height:64px;background:repeating-linear-gradient(45deg,#7b3f34 0 18px,#c59a5d 18px 36px,#5b7181 36px 54px);border:5px solid #4e3225;border-radius:50%/35%;opacity:.9}
+.ww-roomscene .ww-shelf{position:absolute;left:28%;top:62px;width:150px;height:95px;border:6px solid #553824;background:#80563a}.ww-roomscene .ww-shelf:before,.ww-roomscene .ww-shelf:after{content:'';position:absolute;left:0;right:0;height:5px;background:#4d3224}.ww-roomscene .ww-shelf:before{top:31px}.ww-roomscene .ww-shelf:after{top:61px}
+.ww-roomscene .ww-shelf-items{position:absolute;left:31%;top:72px;letter-spacing:15px;font-size:20px}
+.ww-roomscene .ww-ceiling-lamp{position:absolute;left:50%;top:0;transform:translateX(-50%);width:4px;height:35px;background:#2f241d}.ww-roomscene .ww-ceiling-lamp:after{content:'💡';position:absolute;left:-14px;top:26px;font-size:26px;filter:drop-shadow(0 0 9px #ffd686)}
+@media(max-width:650px){.ww-building .ww-post{height:60px}.ww-roomscene .ww-wall-window{width:85px;height:65px}.ww-roomscene .ww-shelf{width:110px}}
+@media(prefers-reduced-motion:reduce){.ww-building.near .ww-door{transition:none!important}}
+`;document.head.append(css);
+// Add grounded street architecture and porch detail to every town building.
+const boardNorth=document.createElement('div');boardNorth.className='ww-boardwalk north';world.append(boardNorth);const boardSouth=document.createElement('div');boardSouth.className='ww-boardwalk south';world.append(boardSouth);
+document.querySelectorAll('.ww-building').forEach((b,i)=>{if(b.dataset.realism)return;b.dataset.realism='1';const extras=document.createElement('div');extras.innerHTML='<i class="ww-awning"></i><i class="ww-post l"></i><i class="ww-post r"></i><i class="ww-lamp l">🏮</i><i class="ww-lamp r">🏮</i><i class="ww-crate '+(i%2?'l':'r')+'">📦</i>';while(extras.firstChild)b.append(extras.firstChild);const shadow=document.createElement('div');shadow.className='ww-street-shadow';const r={x:parseFloat(b.style.left)||0,y:parseFloat(b.style.top)||0,w:parseFloat(b.style.width)||180};shadow.style.left=(r.x+10)+'px';shadow.style.top=(r.y+parseFloat(b.style.height||140)+24)+'px';shadow.style.width=Math.max(90,r.w-20)+'px';world.append(shadow);});
+// Make interior overlay rooms read as real rooms with walls and doors.
+const room=viewport.querySelector('.ww-roomscene');if(room&&!room.dataset.realism){room.dataset.realism='1';['ww-wall-door','ww-wall-window','ww-rug','ww-shelf','ww-shelf-items','ww-ceiling-lamp'].forEach(cls=>{const e=document.createElement('div');e.className=cls;if(cls==='ww-shelf-items')e.textContent='📜 🕯️ 🧴';room.append(e);});}
+// Add realistic doors into special finished areas rather than floating access points.
+const enrichArea=(selector,entries)=>{const area=viewport.querySelector(selector);if(!area||area.dataset.realism)return;area.dataset.realism='1';const stage=area.querySelector('[class$="stage"], .ww-minestage, .ww-ranchstage, .ww-bwstage, .ww-ccstage, .ww-mesastage');if(!stage)return;entries.forEach(({left,bottom,label})=>{const d=document.createElement('div');d.style.cssText='position:absolute;left:'+left+';bottom:'+bottom+';width:58px;height:92px;background:linear-gradient(90deg,#40291f,#65412f);border:5px solid #2f1f18;box-shadow:inset -9px 0 0 #291b16;z-index:6';const knob=document.createElement('i');knob.style.cssText='position:absolute;right:6px;top:43px;width:7px;height:7px;border-radius:50%;background:#d2b06a';d.append(knob);if(label){const s=document.createElement('span');s.textContent=label;s.style.cssText='position:absolute;left:50%;top:-26px;transform:translateX(-50%);white-space:nowrap;background:#e8cf9c;color:#3a281d;border:2px solid #60402c;padding:2px 5px;font:700 10px Georgia,serif';d.append(s);}stage.append(d);});};
+enrichArea('.ww-mine',[{left:'15%',bottom:'48px',label:'Mine Office'}]);
+enrichArea('.ww-ranch',[{left:'79%',bottom:'92px',label:'Barn Door'}]);
+enrichArea('.ww-blackwater',[{left:'7%',bottom:'120px',label:'River Store'}]);
+enrichArea('.ww-copper',[{left:'83%',bottom:'100px',label:'Trading Post'}]);
+enrichArea('.ww-mesa',[{left:'16%',bottom:'100px',label:'Old Office'},{left:'49%',bottom:'100px',label:'Assay Office'},{left:'79%',bottom:'100px',label:'Boarding House'}]);
+})();
