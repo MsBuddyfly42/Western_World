@@ -1,0 +1,130 @@
+(()=>{
+'use strict';
+if(window.__westernPlayableLoaded)return;window.__westernPlayableLoaded=true;
+const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const buildings=[
+{name:"Sheriff's Office",x:170,y:150,w:250,h:180,icon:"★",label:"SHERIFF"},
+{name:"Golden Spur Saloon",x:520,y:120,w:300,h:210,icon:"♫",label:"GOLDEN SPUR"},
+{name:"Sunset Hotel",x:920,y:140,w:260,h:190,icon:"☾",label:"SUNSET HOTEL"},
+{name:"Dusty Trail Bank",x:1320,y:145,w:260,h:185,icon:"$",label:"BANK"},
+{name:"General Store",x:235,y:585,w:285,h:190,icon:"◇",label:"GENERAL STORE"},
+{name:"Frontier Gazette",x:650,y:600,w:260,h:175,icon:"N",label:"GAZETTE"},
+{name:"Railroad Depot",x:1050,y:600,w:315,h:180,icon:"🚂",label:"DEPOT"},
+{name:"Prairie Kitchen",x:1435,y:575,w:250,h:195,icon:"♨",label:"PRAIRIE KITCHEN"},
+{name:"Community Chapel",x:1430,y:350,w:190,h:155,icon:"✦",label:"CHAPEL"},
+{name:"Livery Stable",x:70,y:370,w:270,h:160,icon:"♞",label:"LIVERY"}
+];
+const npcs=[
+{name:"Deputy Mae",x:455,y:390,color:"#78482e",lines:["Morning, traveler. Keep your eyes open near the depot.","Dusty Trail has been too quiet today. That's usually when something happens."]},
+{name:"Rosa Bell",x:780,y:410,color:"#8c3e48",lines:["The Golden Spur has music tonight.","I heard a traveler asking about Whispering Mesa."]},
+{name:"Eli Mercer",x:330,y:520,color:"#41685d",lines:["That horse by the livery likes apples.","Take the south road if you want a quiet ride."]},
+{name:"Ada Quinn",x:930,y:520,color:"#635a85",lines:["I've got a headline looking for a mystery.","The Gazette prints facts. The saloon prints rumors."]},
+{name:"Stationmaster",x:1215,y:520,color:"#44526a",lines:["Express train in soon!","Don't stand too close to the tracks."]}
+];
+const pickups=[
+{id:"badge",x:465,y:760,label:"Old Badge",symbol:"★"},
+{id:"horseshoe",x:860,y:845,label:"Lucky Horseshoe",symbol:"U"},
+{id:"telegram",x:1250,y:405,label:"Folded Telegram",symbol:"✉"},
+{id:"coin",x:1550,y:840,label:"Frontier Token",symbol:"●"}
+];
+let saved={x:850,y:460,found:[],talked:[],mounted:false};
+try{saved={...saved,...JSON.parse(localStorage.getItem('western-playable-v1')||'{}')}}catch{}
+const save=()=>{try{localStorage.setItem('western-playable-v1',JSON.stringify(saved))}catch{}};
+const style=document.createElement('style');style.textContent=`
+#westernPlayBtn{font-size:1.05rem;box-shadow:0 0 0 3px rgba(255,224,153,.22),0 8px 24px rgba(0,0,0,.25)}
+.ww-game{border:0;padding:0;background:#1e130d;width:min(98vw,1100px);max-width:1100px;border-radius:18px;color:#fff7df;overflow:hidden;box-shadow:0 28px 100px #000c}
+.ww-game::backdrop{background:#0e0806ed;backdrop-filter:blur(5px)}
+.ww-shell{display:grid;grid-template-rows:auto auto;min-width:0}
+.ww-top{display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap;background:#4a291c;padding:10px 13px;border-bottom:3px solid #c5914f}
+.ww-brand{display:flex;align-items:center;gap:10px;min-width:0}.ww-brand strong{font:800 1.05rem Georgia,serif}.ww-brand span{font-size:.78rem;color:#ead3a6}
+.ww-stats{display:flex;gap:8px;flex-wrap:wrap}.ww-chip{background:#2d1c15;border:1px solid #8d623f;border-radius:999px;padding:5px 9px;font-size:.78rem}
+.ww-close{border:1px solid #e9c47f;background:#f0d39b;color:#332116;border-radius:9px;min-height:40px;padding:7px 11px;font-weight:800;cursor:pointer}
+.ww-viewport{position:relative;height:min(66vw,620px);min-height:470px;overflow:hidden;background:#d79550;outline:none;touch-action:none}
+.ww-world{position:absolute;width:1800px;height:1000px;transform-origin:0 0;background:
+radial-gradient(circle at 78% 12%,#ffd779 0 38px,transparent 40px),
+linear-gradient(#78afbf 0 38%,#b5a46d 38% 48%,#c9894a 48% 100%);will-change:transform}
+.ww-mountain{position:absolute;bottom:520px;width:420px;height:220px;background:#8b694d;clip-path:polygon(0 100%,25% 28%,38% 60%,58% 10%,78% 55%,100% 100%);opacity:.7}
+.ww-road{position:absolute;left:0;top:330px;width:1800px;height:290px;background:#d6a264;clip-path:polygon(0 24%,100% 5%,100% 95%,0 78%)}
+.ww-road:after{content:"";position:absolute;inset:48% 0 auto;height:5px;background:repeating-linear-gradient(90deg,transparent 0 42px,#8d643d 42px 72px);opacity:.4}
+.ww-track{position:absolute;left:0;top:800px;width:1800px;height:50px;border-top:8px solid #604333;border-bottom:8px solid #604333;background:repeating-linear-gradient(90deg,transparent 0 24px,#50372c 24px 34px,transparent 34px 55px)}
+.ww-building{position:absolute;border:5px solid #5a3522;background:linear-gradient(#ac6538,#744026);border-radius:5px 5px 2px 2px;box-shadow:0 12px 0 #553220,0 18px 16px #59351d66}
+.ww-building:before{content:"";position:absolute;left:-14px;right:-14px;top:-38px;height:48px;background:#603521;clip-path:polygon(8% 100%,0 25%,50% 0,100% 25%,92% 100%);z-index:-1}
+.ww-sign{position:absolute;top:15px;left:50%;transform:translateX(-50%);background:#ead09a;color:#422819;border:3px solid #5c3825;padding:5px 8px;font:800 12px Georgia,serif;white-space:nowrap}
+.ww-door{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:54px;height:82px;background:#40291e;border:4px solid #2a1b15}.ww-window{position:absolute;bottom:70px;width:40px;height:44px;background:#90c4cc;border:4px solid #5b3925}.ww-window.a{left:28px}.ww-window.b{right:28px}
+.ww-building.near{filter:brightness(1.16);box-shadow:0 0 0 5px #f7d071,0 12px 0 #553220,0 18px 22px #3c2418aa}
+.ww-player{position:absolute;width:44px;height:72px;z-index:40;transform:translate(-22px,-62px);filter:drop-shadow(0 6px 3px #0005)}
+.ww-player .head{position:absolute;left:12px;top:10px;width:20px;height:20px;border-radius:50%;background:#b98261;border:2px solid #4b3024}
+.ww-player .hat{position:absolute;left:4px;top:4px;width:36px;height:9px;border-radius:50%;background:#5c3826}.ww-player .hat:before{content:"";position:absolute;left:10px;top:-8px;width:17px;height:13px;background:#5c3826;border-radius:6px 6px 2px 2px}
+.ww-player .body{position:absolute;left:9px;top:30px;width:26px;height:28px;border-radius:7px 7px 3px 3px;background:#304f61}
+.ww-player .leg{position:absolute;top:55px;width:8px;height:17px;background:#3c3028;transform-origin:top}.ww-player .leg.l{left:12px}.ww-player .leg.r{right:12px}
+.ww-player.walk .leg.l{animation:wwleg .32s alternate infinite}.ww-player.walk .leg.r{animation:wwleg .32s alternate-reverse infinite}.ww-player.mounted{transform:translate(-35px,-72px) scale(1.25)}
+.ww-player.mounted:after{content:"🐎";position:absolute;font-size:42px;left:-3px;top:30px;z-index:-1}
+@keyframes wwleg{to{transform:rotate(25deg)}}
+.ww-npc{position:absolute;width:34px;height:58px;transform:translate(-17px,-48px);z-index:25}.ww-npc:before{content:"";position:absolute;left:8px;top:0;width:18px;height:18px;border-radius:50%;background:#bd8e6f;border:2px solid #4a3023}.ww-npc:after{content:"";position:absolute;left:4px;top:18px;width:26px;height:35px;border-radius:7px;background:var(--npc);border:2px solid #3d2d24}.ww-npc.wander{animation:wwbob 1.8s ease-in-out infinite}
+@keyframes wwbob{50%{margin-top:-4px}}
+.ww-pickup{position:absolute;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#f5d986;color:#54351f;border:3px solid #7a4c2e;font-weight:900;box-shadow:0 0 0 5px #fff4bf33;animation:wwfloat 1.5s ease-in-out infinite alternate;z-index:22}
+@keyframes wwfloat{to{transform:translateY(-8px)}}
+.ww-pickup.found{display:none}
+.ww-horse{position:absolute;left:370px;top:515px;font-size:54px;filter:drop-shadow(0 5px 2px #0004);animation:wwbob 2.3s ease-in-out infinite}
+.ww-tumble{position:absolute;font-size:35px;opacity:.65;animation:wwroll 14s linear infinite}
+@keyframes wwroll{from{transform:translateX(-100px) rotate(0)}to{transform:translateX(1900px) rotate(720deg)}}
+.ww-prompt{position:absolute;left:50%;bottom:92px;transform:translateX(-50%);z-index:70;min-width:min(88%,480px);text-align:center;background:#2d1a13e8;border:2px solid #dbb66d;border-radius:12px;padding:10px 12px;box-shadow:0 8px 24px #0008}.ww-prompt[hidden]{display:none}.ww-prompt strong{color:#ffd986}
+.ww-message{position:absolute;left:50%;top:16px;transform:translateX(-50%);z-index:70;background:#f5dfb3;color:#3d291d;border:3px solid #6e472d;border-radius:12px;padding:10px 14px;max-width:min(90%,620px);font-weight:700;text-align:center;box-shadow:0 6px 18px #0005}.ww-message[hidden]{display:none}
+.ww-controls{position:absolute;inset:auto 12px 12px 12px;display:flex;justify-content:space-between;align-items:end;z-index:80;pointer-events:none}.ww-dpad{display:grid;grid-template-columns:repeat(3,48px);grid-template-rows:repeat(2,48px);gap:5px}.ww-dpad button,.ww-action{pointer-events:auto;min-width:48px;min-height:48px;border:2px solid #f0cc83;background:#45291de8;color:white;border-radius:12px;font-weight:900;font-size:20px;touch-action:none}.ww-dpad .up{grid-column:2}.ww-dpad .left{grid-column:1}.ww-dpad .down{grid-column:2}.ww-dpad .right{grid-column:3}.ww-action{min-width:104px;font-size:14px;background:#8d4d27}
+.ww-help{font-size:.75rem;color:#ead7b5;padding:7px 12px;background:#362219;text-align:center}
+@media(max-width:650px){.ww-game{width:100%;border-radius:0}.ww-top{padding:8px}.ww-brand span{display:none}.ww-viewport{height:560px;min-height:520px}.ww-stats .ww-chip:nth-child(3){display:none}.ww-dpad{grid-template-columns:repeat(3,45px);grid-template-rows:repeat(2,45px)}.ww-dpad button{min-width:45px;min-height:45px}.ww-action{min-width:90px}.ww-prompt{bottom:88px;font-size:.85rem}}
+@media(prefers-reduced-motion:reduce){.ww-player.walk .leg,.ww-npc,.ww-pickup,.ww-horse,.ww-tumble{animation:none!important}}
+`;document.head.append(style);
+
+const dialog=document.createElement('dialog');dialog.className='ww-game';dialog.setAttribute('aria-label','Playable Western World');
+dialog.innerHTML=`<div class="ww-shell"><div class="ww-top"><div class="ww-brand"><div><strong>🤠 PLAYABLE WESTERN WORLD</strong><br><span>Walk the town • meet people • enter buildings • collect keepsakes</span></div></div><div class="ww-stats"><span class="ww-chip">📍 <b id="wwPlace">Main Street</b></span><span class="ww-chip">🎒 <b id="wwFound">0</b>/4</span><span class="ww-chip">🐎 <b id="wwRide">On foot</b></span></div><button class="ww-close" type="button">Exit Game</button></div><div class="ww-viewport" tabindex="0" aria-label="Use arrow keys or WASD to walk around Dusty Trail"><div class="ww-world"><div class="ww-mountain" style="left:40px"></div><div class="ww-mountain" style="left:430px;transform:scale(.8)"></div><div class="ww-mountain" style="left:1030px;transform:scale(1.1)"></div><div class="ww-road"></div><div class="ww-track"></div><div class="ww-horse" aria-label="horse">🐎</div><div class="ww-tumble" style="top:530px;animation-delay:-6s">✺</div><div class="ww-player" aria-label="your character"><i class="hat"></i><i class="head"></i><i class="body"></i><i class="leg l"></i><i class="leg r"></i></div></div><div class="ww-message" hidden></div><div class="ww-prompt" hidden></div><div class="ww-controls"><div class="ww-dpad"><button type="button" class="up" data-dir="up" aria-label="Walk up">▲</button><button type="button" class="left" data-dir="left" aria-label="Walk left">◀</button><button type="button" class="down" data-dir="down" aria-label="Walk down">▼</button><button type="button" class="right" data-dir="right" aria-label="Walk right">▶</button></div><button type="button" class="ww-action">INTERACT</button></div></div><div class="ww-help">Keyboard: WASD / arrow keys to move • E or Space to interact • Walk to the horse to mount</div></div>`;
+document.body.append(dialog);
+const viewport=dialog.querySelector('.ww-viewport'),world=dialog.querySelector('.ww-world'),player=dialog.querySelector('.ww-player'),prompt=dialog.querySelector('.ww-prompt'),message=dialog.querySelector('.ww-message'),placeEl=dialog.querySelector('#wwPlace'),foundEl=dialog.querySelector('#wwFound'),rideEl=dialog.querySelector('#wwRide');
+buildings.forEach(b=>{const el=document.createElement('div');el.className='ww-building';el.dataset.place=b.name;Object.assign(el.style,{left:b.x+'px',top:b.y+'px',width:b.w+'px',height:b.h+'px'});el.innerHTML=`<span class="ww-sign">${b.icon} ${b.label}</span><i class="ww-window a"></i><i class="ww-window b"></i><i class="ww-door"></i>`;world.append(el);b.el=el;b.doorX=b.x+b.w/2;b.doorY=b.y+b.h+26;});
+npcs.forEach((n,i)=>{const el=document.createElement('div');el.className='ww-npc wander';el.style.setProperty('--npc',n.color);el.style.left=n.x+'px';el.style.top=n.y+'px';el.title=n.name;world.append(el);n.el=el;});
+pickups.forEach(p=>{const el=document.createElement('div');el.className='ww-pickup'+(saved.found.includes(p.id)?' found':'');el.style.left=p.x+'px';el.style.top=p.y+'px';el.textContent=p.symbol;el.title=p.label;world.append(el);p.el=el;});
+const keys=new Set();let last=0,near=null,raf=0,msgTimer=0;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),dist=(a,b,c,d)=>Math.hypot(a-c,b-d);
+function showMessage(text,time=2400){message.textContent=text;message.hidden=false;clearTimeout(msgTimer);msgTimer=setTimeout(()=>message.hidden=true,time);}
+function solidAt(x,y){
+ for(const b of buildings){if(x>b.x-22&&x<b.x+b.w+22&&y>b.y-18&&y<b.y+b.h-8)return true;}return false;
+}
+function updateNear(){
+ near=null;let best=90;
+ for(const b of buildings){const d=dist(saved.x,saved.y,b.doorX,b.doorY);if(d<best){best=d;near={type:'building',item:b};}}
+ for(const n of npcs){const d=dist(saved.x,saved.y,n.x,n.y);if(d<best){best=d;near={type:'npc',item:n};}}
+ for(const p of pickups){if(saved.found.includes(p.id))continue;const d=dist(saved.x,saved.y,p.x,p.y);if(d<best){best=d;near={type:'pickup',item:p};}}
+ if(dist(saved.x,saved.y,395,535)<best&&dist(saved.x,saved.y,395,535)<100)near={type:'horse'};
+ buildings.forEach(b=>b.el.classList.toggle('near',near?.type==='building'&&near.item===b));
+ if(!near){prompt.hidden=true;placeEl.textContent='Dusty Trail';return;}
+ prompt.hidden=false;
+ if(near.type==='building'){prompt.innerHTML=`Press <strong>E / INTERACT</strong> to enter <strong>${near.item.name}</strong>`;placeEl.textContent=near.item.name;}
+ if(near.type==='npc'){prompt.innerHTML=`Press <strong>E / INTERACT</strong> to talk to <strong>${near.item.name}</strong>`;placeEl.textContent='Main Street';}
+ if(near.type==='pickup'){prompt.innerHTML=`Press <strong>E / INTERACT</strong> to pick up <strong>${near.item.label}</strong>`;}
+ if(near.type==='horse'){prompt.innerHTML=`Press <strong>E / INTERACT</strong> to ${saved.mounted?'dismount':'mount your horse'}`;}
+}
+function render(){
+ player.style.left=saved.x+'px';player.style.top=saved.y+'px';player.classList.toggle('mounted',saved.mounted);foundEl.textContent=saved.found.length;rideEl.textContent=saved.mounted?'Mounted':'On foot';
+ const vw=viewport.clientWidth,vh=viewport.clientHeight;const cx=clamp(vw/2-saved.x, vw-1800,0),cy=clamp(vh/2-saved.y, vh-1000,0);world.style.transform=`translate(${cx}px,${cy}px)`;updateNear();
+}
+function move(dx,dy,amount){let nx=clamp(saved.x+dx*amount,35,1765),ny=clamp(saved.y+dy*amount,355,930);if(!solidAt(nx,ny)){saved.x=nx;saved.y=ny;}player.classList.add('walk');}
+function loop(t){const dt=Math.min(32,t-last||16);last=t;let dx=0,dy=0;if(keys.has('ArrowLeft')||keys.has('a'))dx--;if(keys.has('ArrowRight')||keys.has('d'))dx++;if(keys.has('ArrowUp')||keys.has('w'))dy--;if(keys.has('ArrowDown')||keys.has('s'))dy++;if(dx||dy){const len=Math.hypot(dx,dy)||1;move(dx/len,dy/len,(saved.mounted?0.34:0.22)*dt);render();}else player.classList.remove('walk');raf=requestAnimationFrame(loop);}
+function interact(){
+ if(!near)return showMessage('Walk closer to a building, person, keepsake, or horse.');
+ if(near.type==='building'){save();const target=document.querySelector('.building[data-place="'+CSS.escape(near.item.name)+'"]');dialog.close();setTimeout(()=>target?.click(),80);return;}
+ if(near.type==='npc'){const n=near.item;const line=n.lines[Math.floor(Math.random()*n.lines.length)];showMessage(n.name+': “'+line+'”',3600);if(!saved.talked.includes(n.name)){saved.talked.push(n.name);save();}}
+ if(near.type==='pickup'){const p=near.item;saved.found.push(p.id);p.el.classList.add('found');showMessage('Collected: '+p.label+'!  '+saved.found.length+'/4 keepsakes found.',3000);save();}
+ if(near.type==='horse'){saved.mounted=!saved.mounted;showMessage(saved.mounted?'You mounted your horse. You can travel faster now!':'You hopped down from your horse.');save();render();}
+}
+function openGame(){if(!dialog.open)dialog.showModal();render();viewport.focus();last=performance.now();cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);showMessage(saved.found.length===4?'Welcome back, trail legend!':'Walk around Dusty Trail. Find 4 keepsakes and enter any building.',3200);}
+function closeGame(){save();keys.clear();cancelAnimationFrame(raf);dialog.close();}
+dialog.querySelector('.ww-close').onclick=closeGame;dialog.querySelector('.ww-action').onclick=interact;
+viewport.addEventListener('keydown',e=>{const k=e.key.length===1?e.key.toLowerCase():e.key;if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','w','a','s','d'].includes(k)){e.preventDefault();keys.add(k);}if(k==='e'||k===' '){e.preventDefault();interact();}});
+viewport.addEventListener('keyup',e=>{const k=e.key.length===1?e.key.toLowerCase():e.key;keys.delete(k);});
+dialog.querySelectorAll('[data-dir]').forEach(btn=>{const map={left:'ArrowLeft',right:'ArrowRight',up:'ArrowUp',down:'ArrowDown'},k=map[btn.dataset.dir];const on=e=>{e.preventDefault();keys.add(k);viewport.focus();},off=e=>{e.preventDefault();keys.delete(k);};btn.addEventListener('pointerdown',on);btn.addEventListener('pointerup',off);btn.addEventListener('pointercancel',off);btn.addEventListener('pointerleave',off);});
+dialog.addEventListener('close',()=>{keys.clear();cancelAnimationFrame(raf);save();});
+const heroActions=document.querySelector('.hero-actions');if(heroActions){const btn=document.createElement('button');btn.id='westernPlayBtn';btn.className='primary';btn.type='button';btn.textContent='🎮 Play Western World';btn.onclick=openGame;heroActions.prepend(btn);}
+const enter=document.querySelector('[data-action="open-town"]');if(enter)enter.textContent='Browse Western World';
+window.openWesternPlayable=openGame;
+render();
+})();
