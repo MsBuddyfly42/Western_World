@@ -1,0 +1,37 @@
+
+/* Presentation refresh: gameplay selectors and saved state remain owned by existing scripts. */
+html { font-size: 16px; }
+body { line-height: 1.55; }
+button, input, select, textarea { font-family: system-ui, sans-serif; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--refresh-focus); outline-offset: 4px; }
+button { min-height: 44px; }
+p { line-height: 1.65; }
+h1, h2, h3 { text-wrap: balance; }
+@media (prefers-reduced-motion: reduce) {
+ html { scroll-behavior: auto; }
+ *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+
+:root { --cream:#f7f1e7; --ink:#332a25; --brown:#624535; --rust:#a74a35; --gold:#d7a34c; --teal:#2d646d; --blue:#315a79; --paper:#eee2cf; --shadow:0 10px 28px #49342414; --refresh-focus:#2d646d; }
+body { background:#f7f1e7; background-image:none; }
+.hero.illustrated-frontier { min-height:440px; justify-items:start; padding:36px clamp(18px,5vw,72px); border-bottom:5px solid #a74a35; }
+.hero.illustrated-frontier .hero-content { text-align:left; background:#253b43eb; border:1px solid #b9c8c566; border-radius:16px; max-width:640px; padding:32px; box-shadow:0 16px 40px #182b3c44; }
+.hero.illustrated-frontier .hero-content h1 { font-family:Georgia,serif; font-size:clamp(2.4rem,5vw,4.3rem); text-transform:none; line-height:1.07; letter-spacing:-.025em; text-shadow:none; }
+.hero-content { text-shadow:none; }
+.hero-content .eyebrow { color:#f4c887; font-size:.875rem; }
+.hero-actions { justify-content:flex-start; }
+.primary,.secondary,.tiny { border-radius:10px; border-width:1px; box-shadow:0 3px 9px #332a251a; }
+.primary { background:#a74a35; color:#fff; border-color:#a74a35; }
+.secondary { background:#f7f1e7; color:#332a25; border-color:#b4a48e; }
+.statusbar { background:#253b43; color:#f7f1e7; border-bottom:1px solid #6c858a; padding-block:14px; }
+.explorer-toolbar { border-color:#c3b7a5; box-shadow:0 5px 18px #332a250d; }
+.explorer-heading { background:#eee2cf; }
+.favorite-bar button { border-radius:9px; }
+.choice-card,.role-card,.history-card,.adventure-card { background:#fff; border:1px solid #cfc2b0; border-radius:14px; padding:24px; }
+.choice-card:hover,.role-card:hover,.history-card:hover,.adventure-card:hover { transform:translateY(-3px); box-shadow:0 12px 24px #4934241c; }
+.choice-card h3 { font-size:1.4rem; }
+.choice-card p { color:#66554a; }
+.choice-card.amber { border-top:4px solid #d7a34c; }.choice-card.rust,.choice-card.red { border-top:4px solid #a74a35; }.choice-card.teal { border-top:4px solid #2d646d; }
+.badge { background:#e8ded0; color:#624535; border-radius:8px; font-family:system-ui,sans-serif; font-size:.875rem; }
+.eyebrow,.kicker,.explorer-eyebrow { font-size:.875rem; letter-spacing:.1em; }
+@media(max-width:650px) { .hero.illustrated-frontier { min-height:420px; padding:22px 14px; } .hero.illustrated-frontier .hero-content { max-width:100%; padding:24px 20px; } .section-heading { flex-wrap:wrap; } .hero-actions button { flex:1 1 140px; } }
