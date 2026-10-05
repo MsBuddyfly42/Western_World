@@ -3,8 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#253b43" />
+  <meta name="description" content="Explore Dusty Trail, meet the townsfolk, solve mysteries, and make your own frontier story." />
   <title>Templar's Western World</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="presentation-refresh.css" />
 </head>
 <body data-time="sunset">
   <a class="skip-link" href="#mainContent">Skip to activities</a>
@@ -14,7 +17,7 @@
       <div class="hero-content">
         <p class="eyebrow">WELCOME TO DUSTY TRAIL TERRITORY</p>
         <h1>Templar's Western World</h1>
-        <p class="tagline">Ride in. Explore freely. Solve mysteries. Make your own story.</p>
+        <p class="tagline">Pull up a chair, meet the townsfolk, and follow a trail that catches your eye.</p>
         <div class="hero-actions">
           <button class="primary" data-action="open-town">Enter Dusty Trail</button>
           <button class="secondary" data-action="random-adventure">Surprise Me</button>
@@ -99,7 +102,7 @@
 
     <main id="mainContent" tabindex="-1">
       <section id="home" class="view active-view">
-        <div class="section-heading"><div><p class="kicker">DUSTY TRAIL TERRITORY</p><h2>What do you feel like doing?</h2></div><span class="badge">No pressure. No required path.</span></div>
+        <div class="section-heading"><div><p class="kicker">DUSTY TRAIL TERRITORY</p><h2>What do you feel like doing?</h2></div><span class="badge">Stay awhile. Go at your own pace.</span></div>
         <div class="choice-grid">
           <article role="button" tabindex="0" class="choice-card amber" data-jump="explore"><span class="icon">🐎</span><h3>Just Wander</h3><p>Stroll town, enter buildings, meet characters, and poke around.</p></article>
           <article role="button" tabindex="0" class="choice-card rust" data-jump="adventures"><span class="icon">🚂</span><h3>Take an Adventure</h3><p>Ride the rails, work the ranch, visit a ghost town, or head down the trail.</p></article>
@@ -532,3 +535,4 @@
   <script src="animated-scenes.js" defer></script>\n  <script src="playable-world.js" defer></script>
 </body>
 </html>
+
