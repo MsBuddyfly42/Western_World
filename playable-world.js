@@ -121,7 +121,7 @@ function closeGame(){save();keys.clear();cancelAnimationFrame(raf);dialog.close(
 dialog.querySelector('.ww-close').onclick=closeGame;dialog.querySelector('.ww-action').onclick=interact;
 viewport.addEventListener('keydown',e=>{const k=e.key.length===1?e.key.toLowerCase():e.key;if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','w','a','s','d'].includes(k)){e.preventDefault();keys.add(k);}if(k==='e'||k===' '){e.preventDefault();interact();}});
 viewport.addEventListener('keyup',e=>{const k=e.key.length===1?e.key.toLowerCase():e.key;keys.delete(k);});
-dialog.querySelectorAll('[data-dir]').forEach(btn=>{const map={left:'ArrowLeft',right:'ArrowRight',up:'ArrowUp',down:'ArrowDown'},k=map[btn.dataset.dir];const on=e=>{e.preventDefault();keys.add(k);viewport.focus();},off=e=>{e.preventDefault();keys.delete(k);};btn.addEventListener('pointerdown',on);btn.addEventListener('pointerup',off);btn.addEventListener('pointercancel',off);btn.addEventListener('pointerleave',off);});
+dialog.querySelectorAll('[data-dir]').forEach(btn=>{const map={left:'ArrowLeft',right:'ArrowRight',up:'ArrowUp',down:'ArrowDown'},k=map[btn.dataset.dir];const on=e=>{e.preventDefault();move(btn.dataset.dir==='left'?-1:btn.dataset.dir==='right'?1:0,btn.dataset.dir==='up'?-1:btn.dataset.dir==='down'?1:0,12);render();keys.add(k);viewport.focus();btn.setPointerCapture?.(e.pointerId);},off=e=>{e.preventDefault();keys.delete(k);};btn.addEventListener('pointerdown',on);btn.addEventListener('pointerup',off);btn.addEventListener('pointercancel',off);btn.addEventListener('lostpointercapture',off);btn.addEventListener('pointerleave',off);});
 dialog.addEventListener('close',()=>{keys.clear();cancelAnimationFrame(raf);save();});
 const heroActions=document.querySelector('.hero-actions');if(heroActions){const btn=document.createElement('button');btn.id='westernPlayBtn';btn.className='primary';btn.type='button';btn.textContent='🎮 Play Western World';btn.onclick=openGame;heroActions.prepend(btn);}
 const enter=document.querySelector('[data-action="open-town"]');if(enter)enter.textContent='Browse Western World';
@@ -637,3 +637,4 @@ const player=game.querySelector('.ww-player');const obs=new MutationObserver(()=
 // Keep completion HUD out of the way during modal sub-areas.
 const mo=new MutationObserver(()=>{const overlayOpen=[...viewport.children].some(el=>el!==hud&&el.classList&&[...el.classList].some(c=>/^ww-/.test(c))&&(el.classList.contains('open')));hud.style.opacity=overlayOpen?'.2':'1';hud.style.pointerEvents=overlayOpen?'none':'auto';});mo.observe(viewport,{subtree:true,attributes:true,attributeFilter:['class']});
 })();
+

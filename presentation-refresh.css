@@ -38,3 +38,48 @@ body { background:#f7f1e7; background-image:none; }
 
 .explorer-heading { color:#332a25; }
 .explorer-heading .explorer-eyebrow { color:#795126; }
+
+/* Let the existing playable town fill the screen; Exit Game returns to every original activity. */
+dialog.ww-game { width:100vw; max-width:100vw; height:100dvh; max-height:100dvh; margin:0; border-radius:0; }
+.ww-game .ww-shell { height:100%; grid-template-rows:minmax(0,1fr) auto; }
+.ww-game .ww-top { max-height:20dvh; overflow-y:auto; flex:0 0 auto; background:#3a233f; border-bottom:2px solid #ffc658; gap:8px; }
+.ww-game .ww-shell { display:flex; flex-direction:column; }
+.ww-game .ww-viewport { flex:1 1 auto; height:auto; min-height:280px; }
+.ww-game .ww-help { flex:0 0 auto; padding:10px 14px; font-size:.875rem; background:#251c30; color:#ffebc6; }
+.ww-game .ww-top button { min-height:44px; }
+.ww-game .ww-close { background:#ffc658; color:#302015; border-color:#ffc658; }
+@media(max-width:650px) { .ww-game .ww-top { max-height:24dvh; } .ww-game .ww-brand { width:100%; } .ww-game .ww-top button { font-size:.875rem; padding:8px 10px; } }
+
+/* New adventures use existing world geometry and controls. */
+.adventure-track { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 14px; background:#291647; border:1px solid #a37ed1; border-radius:12px; color:#fff1cc; font:700 .875rem/1.4 system-ui,sans-serif; }
+.adventure-track button { background:#ffd35e; color:#291647; border:0; border-radius:8px; padding:8px 12px; font-weight:800; }
+.adventure-marker { position:absolute; z-index:65; transform:translate(-50%,-50%); width:48px; height:48px; min-height:48px; border:2px solid #ffdb79; border-radius:50%; background:#3d2062; color:#ffdc7b; font-size:1.7rem; box-shadow:0 0 0 7px #ffda6b22,0 0 24px #ffda6b66; cursor:pointer; }
+.adventure-marker[data-near="true"] { background:#ffdb79; color:#291647; box-shadow:0 0 0 8px #ffda6b44; }
+.adventure-marker[hidden] { display:none!important; }
+.adventure-dialog { width:min(570px,calc(100vw - 24px)); max-height:85dvh; overflow:auto; border:2px solid #c596ee; border-radius:18px; padding:24px; background:#221239; color:#fff2dd; box-shadow:0 20px 70px #0009; font-family:system-ui,sans-serif; }
+.adventure-dialog::backdrop { background:#10091bbf; }
+.adventure-dialog-head { display:flex; align-items:center; justify-content:space-between; gap:12px; color:#ffdb79; font-size:.8125rem; letter-spacing:.08em; }
+.adventure-dialog-head button { border:1px solid #9670ba; border-radius:8px; background:#3d2062; color:white; font-size:1.5rem; min-width:44px; }
+.adventure-dialog h2 { font:700 clamp(1.7rem,5vw,2.3rem)/1.15 Georgia,serif; color:#ffdb79; margin:18px 0; }
+.adventure-story { white-space:pre-line; font-size:1rem; line-height:1.6; }
+.adventure-choices { display:grid; gap:10px; }
+.adventure-choices button { text-align:left; padding:12px 16px; min-height:48px; border:1px solid #9570bc; border-radius:10px; background:#503077; color:#fff; font-weight:700; }
+.adventure-choices button:hover { background:#684095; }
+.adventure-feedback { color:#ffdb79; margin-bottom:0; }
+.ww-game .adventure-track { flex:0 0 auto; border-radius:0; font-size:.8125rem; padding:7px 10px; }
+@media(max-width:600px) { .adventure-track { gap:8px; padding:8px; } .adventure-track span { max-width:70%; } .adventure-dialog { padding:18px; } }
+
+.adventure-dialog[open] { z-index:100001; }
+.adventure-marker:focus-visible { outline:3px solid #fff; outline-offset:5px; }
+.world-activity-menu { position:relative; }
+.world-activity-menu summary { cursor:pointer; min-height:44px; display:flex; align-items:center; padding:8px 12px; border:1px solid #d8ad67; border-radius:9px; background:#3e281e; color:#fff5d8; font:700 .875rem system-ui,sans-serif; }
+.world-activity-items { display:flex; gap:8px; flex-wrap:wrap; padding:12px 0; }
+.ww-game [hidden] { display:none!important; }
+.ww-game .ww-top { max-height:27dvh; }
+.ww-game .ww-controls { z-index:190; }
+#livingWorld.hud-resting .world-top, #livingWorld.hud-resting .game-shell, #livingWorld.hud-resting .play-hud { opacity:1; pointer-events:auto; filter:none; }
+#livingWorld .play-controls, #livingWorld .play-action-mobile { z-index:100; }
+
+.ww-game .ww-progress[hidden],.ww-game .ww-questhud[hidden],.ww-game .ww-finalhud[hidden] { display:none!important; }
+
+.ww-viewport > :is(.ww-story,.ww-territory-game,.ww-travel-overlay,.ww-bountyboard,.ww-jobboard,.ww-campmenu,.ww-chase,.ww-festival,.ww-mine,.ww-ranch,.ww-blackwater,.ww-copper,.ww-mesa,.ww-canyon,.ww-railrun,.ww-court,.ww-clinic,.ww-saloonhub,.ww-hotel,.ww-market,.ww-gazette,.ww-sheriff,.ww-interior-room) { overflow:auto; max-height:100%; }
