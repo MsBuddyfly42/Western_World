@@ -35,3 +35,6 @@ body { background:#f7f1e7; background-image:none; }
 .badge { background:#e8ded0; color:#624535; border-radius:8px; font-family:system-ui,sans-serif; font-size:.875rem; }
 .eyebrow,.kicker,.explorer-eyebrow { font-size:.875rem; letter-spacing:.1em; }
 @media(max-width:650px) { .hero.illustrated-frontier { min-height:420px; padding:22px 14px; } .hero.illustrated-frontier .hero-content { max-width:100%; padding:24px 20px; } .section-heading { flex-wrap:wrap; } .hero-actions button { flex:1 1 140px; } }
+
+.explorer-heading { color:#332a25; }
+.explorer-heading .explorer-eyebrow { color:#795126; }
