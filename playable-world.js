@@ -111,9 +111,9 @@ function move(dx,dy,amount){let nx=clamp(saved.x+dx*amount,35,1765),ny=clamp(sav
 function loop(t){const dt=Math.min(32,t-last||16);last=t;let dx=0,dy=0;if(keys.has('ArrowLeft')||keys.has('a'))dx--;if(keys.has('ArrowRight')||keys.has('d'))dx++;if(keys.has('ArrowUp')||keys.has('w'))dy--;if(keys.has('ArrowDown')||keys.has('s'))dy++;if(dx||dy){const len=Math.hypot(dx,dy)||1;move(dx/len,dy/len,(saved.mounted?0.34:0.22)*dt);render();}else player.classList.remove('walk');raf=requestAnimationFrame(loop);}
 function interact(){
  if(!near)return showMessage('Walk closer to a building, person, keepsake, or horse.');
- if(near.type==='building'){save();const target=document.querySelector('.building[data-place="'+CSS.escape(near.item.name)+'"]');dialog.close();setTimeout(()=>target?.click(),80);return;}
+ if(near.type==='building'){const target=document.querySelector('.building[data-place="'+CSS.escape(near.item.name)+'"]');if(!target)return showMessage('This door is unavailable. You can keep exploring town.');save();dialog.close();setTimeout(()=>{showView('explore');target.click();},80);return;}
  if(near.type==='npc'){const n=near.item;const line=n.lines[Math.floor(Math.random()*n.lines.length)];showMessage(n.name+': “'+line+'”',3600);if(!saved.talked.includes(n.name)){saved.talked.push(n.name);save();}}
- if(near.type==='pickup'){const p=near.item;saved.found.push(p.id);p.el.classList.add('found');showMessage('Collected: '+p.label+'!  '+saved.found.length+'/4 keepsakes found.',3000);save();}
+ if(near.type==='pickup'){const p=near.item;if(saved.found.includes(p.id)){render();return;}saved.found.push(p.id);p.el.classList.add('found');showMessage('Collected: '+p.label+'!  '+saved.found.length+'/4 keepsakes found.',3000);save();render();}
  if(near.type==='horse'){saved.mounted=!saved.mounted;showMessage(saved.mounted?'You mounted your horse. You can travel faster now!':'You hopped down from your horse.');save();render();}
 }
 function openGame(){if(!dialog.open)dialog.showModal();render();viewport.focus();last=performance.now();cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);showMessage(saved.found.length===4?'Welcome back, trail legend!':'Walk around Dusty Trail. Find 4 keepsakes and enter any building.',3200);}
@@ -637,4 +637,5 @@ const player=game.querySelector('.ww-player');const obs=new MutationObserver(()=
 // Keep completion HUD out of the way during modal sub-areas.
 const mo=new MutationObserver(()=>{const overlayOpen=[...viewport.children].some(el=>el!==hud&&el.classList&&[...el.classList].some(c=>/^ww-/.test(c))&&(el.classList.contains('open')));hud.style.opacity=overlayOpen?'.2':'1';hud.style.pointerEvents=overlayOpen?'none':'auto';});mo.observe(viewport,{subtree:true,attributes:true,attributeFilter:['class']});
 })();
+
 
